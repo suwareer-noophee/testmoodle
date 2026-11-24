@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ระบบการเรียนรู้ออนไลน์ Moodle</title>
+  <meta name="description" content="ระบบจัดการการเรียนรู้ออนไลน์ (LMS) เรียนได้ทุกที่ทุกเวลา พร้อมรายวิชาคุณภาพจากอาจารย์ผู้เชี่ยวชาญ">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ส่วนหัว -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="#home" class="logo">
+        <span class="logo-mark">M</span>
+        <span>Moodle <small>ห้องเรียนออนไลน์</small></span>
+      </a>
+      <input type="checkbox" id="menu-toggle" class="menu-toggle" aria-label="เปิดเมนู">
+      <label for="menu-toggle" class="menu-btn" aria-hidden="true"><span></span></label>
+      <nav class="main-nav">
+        <a href="#home">หน้าแรก</a>
+        <a href="#courses">รายวิชา</a>
+        <a href="#features">คุณสมบัติ</a>
+        <a href="#steps">เริ่มต้นใช้งาน</a>
+        <a href="#news">ข่าวสาร</a>
+        <a href="#faq">คำถามที่พบบ่อย</a>
+        <a href="#login" class="btn btn-small">เข้าสู่ระบบ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- ส่วนต้อนรับ -->
+    <section id="home" class="hero">
+      <div class="container hero-inner">
+        <div class="hero-text">
+          <span class="badge">🎓 เปิดรับสมัครภาคเรียนใหม่</span>
+          <h1>เรียนรู้ได้ทุกที่<br>ทุกเวลา กับ <em>Moodle</em></h1>
+          <p>แพลตฟอร์มการเรียนการสอนออนไลน์ที่รวมบทเรียน แบบทดสอบ การบ้าน และกระดานสนทนาไว้ในที่เดียว เพื่อประสบการณ์การเรียนที่ต่อเนื่องและมีส่วนร่วม</p>
+          <div class="hero-actions">
+            <a href="#courses" class="btn">ดูรายวิชาทั้งหมด</a>
+            <a href="#steps" class="btn btn-outline">เริ่มต้นใช้งาน</a>
+          </div>
+          <form class="search" role="search" onsubmit="return false">
+            <input type="search" placeholder="ค้นหารายวิชา เช่น คณิตศาสตร์, ภาษาอังกฤษ" aria-label="ค้นหารายวิชา">
+            <button type="submit">ค้นหา</button>
+          </form>
+        </div>
+        <div class="hero-card" aria-hidden="true">
+          <div class="mock-top"><i></i><i></i><i></i></div>
+          <div class="mock-title">ความคืบหน้าของฉัน</div>
+          <div class="mock-row"><span>ภาษาอังกฤษเพื่อการสื่อสาร</span><b>85%</b></div>
+          <div class="bar"><div style="width:85%"></div></div>
+          <div class="mock-row"><span>พื้นฐานการเขียนโปรแกรม</span><b>62%</b></div>
+          <div class="bar"><div style="width:62%"></div></div>
+          <div class="mock-row"><span>สถิติเพื่อการวิจัย</span><b>40%</b></div>
+          <div class="bar"><div style="width:40%"></div></div>
+          <div class="mock-note">📌 งานที่ต้องส่ง: แบบฝึกหัดบทที่ 5 · พรุ่งนี้ 23:59</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- สถิติ -->
+    <section class="stats">
+      <div class="container stats-grid">
+        <div><strong>12,500+</strong><span>ผู้เรียน</span></div>
+        <div><strong>320</strong><span>รายวิชา</span></div>
+        <div><strong>85</strong><span>อาจารย์ผู้สอน</span></div>
+        <div><strong>98%</strong><span>ความพึงพอใจ</span></div>
+      </div>
+    </section>
+
+    <!-- รายวิชา -->
+    <section id="courses" class="section">
+      <div class="container">
+        <div class="section-head">
+          <h2>รายวิชาแนะนำ</h2>
+          <p>เลือกเรียนตามความสนใจ พร้อมใบรับรองเมื่อจบหลักสูตร</p>
+        </div>
+        <div class="cards">
+          <article class="card">
+            <div class="thumb t1">🔤</div>
+            <div class="card-body">
+              <span class="tag">ภาษา</span>
+              <h3>ภาษาอังกฤษเพื่อการสื่อสาร</h3>
+              <p>ฝึกฟัง พูด อ่าน เขียน ด้วยสถานการณ์จริงในชีวิตประจำวันและการทำงาน</p>
+              <div class="meta"><span>👨‍🏫 อ.สมหญิง ใจดี</span><span>⏱ 8 สัปดาห์</span></div>
+              <a href="#login" class="btn btn-block">ลงทะเบียนเรียน</a>
+            </div>
+          </article>
+          <article class="card">
+            <div class="thumb t2">💻</div>
+            <div class="card-body">
+              <span class="tag">เทคโนโลยี</span>
+              <h3>พื้นฐานการเขียนโปรแกรม</h3>
+              <p>เรียนรู้แนวคิดการเขียนโปรแกรมและตรรกะ ด้วยภาษา Python สำหรับผู้เริ่มต้น</p>
+              <div class="meta"><span>👨‍🏫 อ.ธนา เทคโนโลยี</span><span>⏱ 10 สัปดาห์</span></div>
+              <a href="#login" class="btn btn-block">ลงทะเบียนเรียน</a>
+            </div>
+          </article>
+          <article class="card">
+            <div class="thumb t3">📊</div>
+            <div class="card-body">
+              <span class="tag">วิทยาศาสตร์</span>
+              <h3>สถิติเพื่อการวิจัย</h3>
+              <p>วิเคราะห์ข้อมูลเชิงสถิติ การทดสอบสมมติฐาน และการนำเสนอผลงานวิจัย</p>
+              <div class="meta"><span>👨‍🏫 ผศ.ดร.วิชัย ตัวเลข</span><span>⏱ 12 สัปดาห์</span></div>
+              <a href="#login" class="btn btn-block">ลงทะเบียนเรียน</a>
+            </div>
+          </article>
+          <article class="card">
+            <div class="thumb t4">📈</div>
+            <div class="card-body">
+              <span class="tag">ธุรกิจ</span>
+              <h3>การตลาดดิจิทัลเบื้องต้น</h3>
+              <p>วางกลยุทธ์การตลาดออนไลน์ โซเชียลมีเดีย และการวัดผลแคมเปญ</p>
+              <div class="meta"><span>👨‍🏫 อ.มาลี การตลาด</span><span>⏱ 6 สัปดาห์</span></div>
+              <a href="#login" class="btn btn-block">ลงทะเบียนเรียน</a>
+            </div>
+          </article>
+          <article class="card">
+            <div class="thumb t5">🎨</div>
+            <div class="card-body">
+              <span class="tag">ศิลปะ</span>
+              <h3>การออกแบบกราฟิกสำหรับมือใหม่</h3>
+              <p>หลักการออกแบบ สี และตัวอักษร พร้อมฝึกทำสื่อจริงจากโจทย์โครงงาน</p>
+              <div class="meta"><span>👨‍🏫 อ.ปิยะ สร้างสรรค์</span><span>⏱ 8 สัปดาห์</span></div>
+              <a href="#login" class="btn btn-block">ลงทะเบียนเรียน</a>
+            </div>
+          </article>
+          <article class="card">
+            <div class="thumb t6">🧪</div>
+            <div class="card-body">
+              <span class="tag">วิทยาศาสตร์</span>
+              <h3>เคมีทั่วไป</h3>
+              <p>ทบทวนพื้นฐานเคมี พร้อมแล็บเสมือนจริงและแบบทดสอบท้ายบท</p>
+              <div class="meta"><span>👨‍🏫 ดร.นภา ทดลอง</span><span>⏱ 14 สัปดาห์</span></div>
+              <a href="#login" class="btn btn-block">ลงทะเบียนเรียน</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- คุณสมบัติ -->
+    <section id="features" class="section alt">
+      <div class="container">
+        <div class="section-head">
+          <h2>ทำไมต้องเรียนกับเรา</h2>
+          <p>เครื่องมือครบครันสำหรับทั้งผู้เรียนและผู้สอน</p>
+        </div>
+        <div class="features">
+          <div class="feature"><span class="ico">📚</span><h3>บทเรียนหลากหลาย</h3><p>วิดีโอ เอกสาร สไลด์ และสื่อโต้ตอบ เข้าถึงได้ตลอด 24 ชั่วโมง</p></div>
+          <div class="feature"><span class="ico">📝</span><h3>แบบทดสอบอัตโนมัติ</h3><p>ตรวจข้อสอบและแจ้งผลทันที พร้อมเฉลยและคำแนะนำ</p></div>
+          <div class="feature"><span class="ico">💬</span><h3>กระดานสนทนา</h3><p>ถามตอบกับอาจารย์และเพื่อนร่วมชั้นเรียนได้อย่างสะดวก</p></div>
+          <div class="feature"><span class="ico">📅</span><h3>ปฏิทินและการแจ้งเตือน</h3><p>ไม่พลาดกำหนดส่งงานและกิจกรรมสำคัญ ด้วยการแจ้งเตือนอัตโนมัติ</p></div>
+          <div class="feature"><span class="ico">📱</span><h3>รองรับทุกอุปกรณ์</h3><p>ใช้งานได้ทั้งคอมพิวเตอร์ แท็บเล็ต และสมาร์ทโฟน</p></div>
+          <div class="feature"><span class="ico">🏅</span><h3>ใบรับรองผลการเรียน</h3><p>รับเกียรติบัตรดิจิทัลเมื่อเรียนจบตามเกณฑ์ที่กำหนด</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ขั้นตอน -->
+    <section id="steps" class="section">
+      <div class="container">
+        <div class="section-head">
+          <h2>เริ่มต้นใช้งานใน 4 ขั้นตอน</h2>
+          <p>ง่าย รวดเร็ว ไม่ซับซ้อน</p>
+        </div>
+        <ol class="steps">
+          <li><b>1</b><h3>สมัครสมาชิก</h3><p>สร้างบัญชีด้วยอีเมลของสถาบัน</p></li>
+          <li><b>2</b><h3>เลือกรายวิชา</h3><p>ค้นหาและลงทะเบียนวิชาที่สนใจ</p></li>
+          <li><b>3</b><h3>เรียนและทำกิจกรรม</h3><p>ดูบทเรียน ทำแบบทดสอบ ส่งงาน</p></li>
+          <li><b>4</b><h3>รับผลการเรียน</h3><p>ตรวจสอบคะแนนและดาวน์โหลดใบรับรอง</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ข่าวสารและปฏิทิน -->
+    <section id="news" class="section alt">
+      <div class="container news-grid">
+        <div>
+          <h2>ประกาศและข่าวสาร</h2>
+          <ul class="news-list">
+            <li><time>24 พ.ย. 2569</time><div><h3>เปิดรับลงทะเบียนภาคเรียนที่ 2/2569</h3><p>ลงทะเบียนได้ตั้งแต่วันนี้ถึง 15 ธันวาคม 2569</p></div></li>
+            <li><time>20 พ.ย. 2569</time><div><h3>ปรับปรุงระบบ: เพิ่มแบบทดสอบแบบจับเวลา</h3><p>อาจารย์สามารถกำหนดเวลาและสุ่มข้อสอบได้แล้ว</p></div></li>
+            <li><time>15 พ.ย. 2569</time><div><h3>อบรมการใช้งานสำหรับอาจารย์ผู้สอน</h3><p>ออนไลน์ผ่าน Zoom วันที่ 28 พฤศจิกายน เวลา 13:00 น.</p></div></li>
+          </ul>
+        </div>
+        <aside class="calendar">
+          <h2>กิจกรรมที่กำลังมาถึง</h2>
+          <div class="event"><div class="date"><b>28</b>พ.ย.</div><span>อบรมอาจารย์ผู้สอน</span></div>
+          <div class="event"><div class="date"><b>05</b>ธ.ค.</div><span>สอบกลางภาค: ภาษาอังกฤษ</span></div>
+          <div class="event"><div class="date"><b>15</b>ธ.ค.</div><span>ปิดรับลงทะเบียน</span></div>
+          <div class="event"><div class="date"><b>20</b>ธ.ค.</div><span>ส่งโครงงานกลุ่ม</span></div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- รีวิว -->
+    <section class="section">
+      <div class="container">
+        <div class="section-head"><h2>เสียงจากผู้เรียน</h2></div>
+        <div class="quotes">
+          <blockquote>“เรียนตามเวลาของตัวเองได้จริง ระบบใช้ง่ายและมีแบบฝึกหัดช่วยทบทวนดีมาก”<cite>— กานดา, นักศึกษาปี 2</cite></blockquote>
+          <blockquote>“ติดตามความคืบหน้าของนักเรียนได้ละเอียด ช่วยให้สอนได้ตรงจุดมากขึ้น”<cite>— อ.สุรชัย, ผู้สอน</cite></blockquote>
+          <blockquote>“ทำงานไปเรียนไป ใช้มือถือเรียนระหว่างเดินทางได้สะดวกมาก”<cite>— ปรีชา, ผู้เรียนวัยทำงาน</cite></blockquote>
+        </div>
+      </div>
+    </section>
+
+    <!-- คำถามที่พบบ่อย -->
+    <section id="faq" class="section alt">
+      <div class="container narrow">
+        <div class="section-head"><h2>คำถามที่พบบ่อย</h2></div>
+        <details open><summary>ต้องเสียค่าใช้จ่ายในการสมัครหรือไม่?</summary><p>การสมัครสมาชิกไม่มีค่าใช้จ่าย บางรายวิชาอาจมีค่าลงทะเบียนตามที่ระบุไว้ในหน้ารายละเอียดวิชา</p></details>
+        <details><summary>ลืมรหัสผ่านต้องทำอย่างไร?</summary><p>คลิก “ลืมรหัสผ่าน” ที่หน้าเข้าสู่ระบบ แล้วกรอกอีเมล ระบบจะส่งลิงก์ตั้งรหัสผ่านใหม่ให้</p></details>
+        <details><summary>เรียนผ่านมือถือได้หรือไม่?</summary><p>ได้ ระบบรองรับทุกอุปกรณ์ และสามารถติดตั้งแอป Moodle เพื่อรับการแจ้งเตือนได้</p></details>
+        <details><summary>จะได้รับใบรับรองเมื่อไร?</summary><p>เมื่อทำกิจกรรมครบและคะแนนผ่านเกณฑ์ ระบบจะออกใบรับรองให้ดาวน์โหลดได้ทันที</p></details>
+      </div>
+    </section>
+
+    <!-- เข้าสู่ระบบ -->
+    <section id="login" class="section login">
+      <div class="container login-inner">
+        <div class="login-text">
+          <h2>พร้อมเริ่มเรียนแล้วหรือยัง?</h2>
+          <p>เข้าสู่ระบบเพื่อเข้าห้องเรียนของคุณ หรือสมัครสมาชิกใหม่ได้ทันที</p>
+        </div>
+        <form class="login-form" onsubmit="return false">
+          <label>ชื่อผู้ใช้<input type="text" placeholder="ชื่อผู้ใช้หรืออีเมล" autocomplete="username"></label>
+          <label>รหัสผ่าน<input type="password" placeholder="รหัสผ่าน" autocomplete="current-password"></label>
+          <button type="submit" class="btn btn-block">เข้าสู่ระบบ</button>
+          <div class="login-links"><a href="#">ลืมรหัสผ่าน?</a><a href="#">สมัครสมาชิกใหม่</a></div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- ส่วนท้าย -->
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <div class="logo light"><span class="logo-mark">M</span><span>Moodle</span></div>
+        <p>ระบบการเรียนรู้ออนไลน์เพื่อการศึกษาตลอดชีวิต</p>
+      </div>
+      <div>
+        <h4>ลิงก์ด่วน</h4>
+        <a href="#courses">รายวิชา</a><a href="#features">คุณสมบัติ</a><a href="#faq">คำถามที่พบบ่อย</a>
+      </div>
+      <div>
+        <h4>ติดต่อเรา</h4>
+        <p>📍 123 ถนนตัวอย่าง กรุงเทพฯ 10000</p>
+        <p>📞 02-123-4567</p>
+        <p>✉️ support@example.ac.th</p>
+      </div>
+    </div>
+    <div class="copy">© 2569 Moodle ห้องเรียนออนไลน์ สงวนลิขสิทธิ์</div>
+  </footer>
+
+</body>
+</html>
