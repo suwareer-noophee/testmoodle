@@ -1,0 +1,680 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>คู่มือ Rangsit LMS สำหรับอาจารย์ผู้สอน</title>
+<meta name="description" content="คู่มือใช้งาน Rangsit LMS (Moodle) สำหรับอาจารย์ผู้สอน ตั้งแต่เข้าสู่ระบบ สร้างรายวิชา ถึงสมุดคะแนน">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&family=Mitr:wght@400;500;600&display=swap">
+<style>
+:root {
+  --paper: #fff0df;
+  --grid: #ffd9b3;
+  --band: #ffc489;
+  --surface: #ffffff;
+  --ink: #2b1608;
+  --muted: #6b4426;
+  --line: #f0c9a0;
+  --orange: #f98012;
+  --orange-ink: #8a3f00;
+  --pass: #1f9d6b;
+  --tint: #ffe0bf;
+  --display: "Mitr", "Noto Sans Thai", system-ui, sans-serif;
+  --body: "IBM Plex Sans Thai", "Noto Sans Thai", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #1f1209; --grid: #33200f; --band: #4a2a0f; --surface: #2b1a0e; --ink: #fff0df; --muted: #e0bf9d;
+    --line: #4a3018; --orange: #ff9a3d; --orange-ink: #ffc58f; --pass: #4fd09a; --tint: #3d2712;
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0; color: var(--ink); font-family: var(--body); font-size: 1.0625rem; line-height: 1.8;
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 32px 32px;
+  padding-inline: max(16px, env(safe-area-inset-left, 0px));
+}
+.wrap { max-width: 68rem; margin: 0 auto; }
+a { color: inherit; text-underline-offset: 4px; }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--orange); outline-offset: 3px; border-radius: 6px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 500; line-height: 1.35; margin: 0; text-wrap: balance; }
+h2 { font-size: clamp(1.7rem, 3.6vw, 2.35rem); }
+h3 { font-size: 1.2rem; }
+p { margin: 0; max-width: 62ch; }
+.muted { color: var(--muted); }
+.hl { background: linear-gradient(transparent 55%, color-mix(in srgb, var(--orange) 55%, transparent) 55%); padding-inline: .1em; }
+
+/* Top bar */
+.top { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: .75rem 1.5rem; padding-block: 1.25rem; }
+.brand { font-family: var(--display); font-size: 1.25rem; text-decoration: none; display: flex; align-items: center; gap: .6rem; }
+.brand i { width: 2.2rem; height: 2.2rem; border-radius: 12px 12px 12px 3px; border: 2px solid var(--ink); background: var(--orange); display: grid; place-items: center; color: #fff; font-style: normal; font-size: 1.2rem; }
+.top nav { display: flex; gap: 1.4rem; flex-wrap: wrap; font-size: .97rem; }
+.top nav a { text-decoration: none; padding-block: .2rem; border-bottom: 2px solid transparent; }
+.top nav a:hover { border-color: var(--orange); }
+
+/* Hero */
+.hero { display: grid; grid-template-columns: 1.05fr 1fr; gap: 3.5rem; align-items: center; padding-block: 3rem 5rem; }
+.hero > * { min-width: 0; }
+.hero h1 { font-size: clamp(2.5rem, 6.2vw, 4.4rem); font-weight: 600; line-height: 1.25; letter-spacing: -.01em; margin-bottom: 1.4rem; }
+.lede { font-size: 1.15rem; color: var(--muted); }
+.name-note { margin-top: 1.6rem; font-size: .95rem; color: var(--muted); border-left: 3px solid var(--orange); padding-left: .9rem; max-width: 48ch; }
+
+/* Course card (the one memorable element) */
+.course-wrap { position: relative; padding: 14px 0 0; }
+.course {
+  position: relative; background: var(--surface); border: 2px solid var(--ink); border-radius: 14px;
+  box-shadow: 8px 8px 0 var(--ink); transform: rotate(-1deg); overflow: hidden;
+}
+.tape { position: absolute; z-index: 2; top: 2px; left: 50%; width: 110px; height: 28px; margin-left: -55px; background: color-mix(in srgb, var(--orange) 80%, transparent); transform: rotate(2deg); }
+.course-head { padding: 1.5rem 1.4rem 1rem; border-bottom: 2px solid var(--ink); }
+.crumbs { font-size: .8rem; color: var(--muted); }
+.course-head h3 { margin: .2rem 0 .8rem; font-size: 1.1rem; }
+.progress { display: flex; align-items: center; gap: .8rem; font-size: .85rem; color: var(--muted); }
+.bar { flex: 1; height: 10px; border-radius: 99px; background: var(--tint); border: 1.5px solid var(--ink); overflow: hidden; }
+.bar span { display: block; height: 100%; width: 0; background: var(--orange); transition: width .4s ease; }
+.week { padding: .55rem 1.4rem; background: var(--tint); font-weight: 600; font-size: .92rem; border-bottom: 1px solid var(--line); }
+.acts { list-style: none; margin: 0; padding: 0; }
+.acts li { display: flex; align-items: center; gap: .85rem; padding: .8rem 1.4rem; border-bottom: 1px solid var(--line); }
+.acts .ico { flex: none; width: 2.5rem; height: 2.5rem; border-radius: 12px; display: grid; place-items: center; font-size: 1.35rem; line-height: 1; background: var(--tint); border: 1.5px solid var(--ink); }
+.acts .name { flex: 1; min-width: 0; font-size: .95rem; line-height: 1.5; }
+.acts .name small { display: block; color: var(--muted); font-size: .8rem; }
+.done { flex: none; font: inherit; font-size: .8rem; cursor: pointer; background: transparent; color: var(--ink); border: 1.5px solid var(--ink); border-radius: 99px; padding: .2rem .8rem; }
+.done:hover { background: var(--tint); }
+.done[aria-pressed="true"] { background: var(--pass); border-color: var(--pass); color: #fff; }
+.course-foot { padding: .7rem 1.4rem; font-size: .8rem; color: var(--muted); }
+.stamp {
+  position: absolute; right: 1.2rem; top: 5.2rem; z-index: 3; pointer-events: none;
+  border: 4px solid var(--pass); color: var(--pass); border-radius: 10px; padding: .1rem .9rem;
+  font-family: var(--display); font-size: 1.6rem; background: color-mix(in srgb, var(--surface) 88%, transparent);
+  opacity: 0; transform: rotate(-12deg) scale(2.2);
+}
+.stamp.on { opacity: 1; transform: rotate(-12deg) scale(1); transition: transform .28s cubic-bezier(.3,1.6,.5,1), opacity .12s; }
+
+/* Stickers */
+.sticker { position: absolute; z-index: 4; display: grid; place-items: center; width: 3.4rem; height: 3.4rem; font-size: 1.8rem; line-height: 1; background: var(--surface); border: 2px solid var(--ink); border-radius: 50%; box-shadow: 3px 3px 0 var(--ink); pointer-events: none; }
+.sticker.s1 { left: -1.4rem; top: 38%; transform: rotate(-12deg); background: #fff3a8; }
+.sticker.s2 { right: -1rem; bottom: 3.5rem; transform: rotate(10deg); background: #ffc2d8; }
+.sticker.s3 { left: 2.5rem; bottom: -1.6rem; transform: rotate(6deg); background: #bfe9ff; }
+.sticker.s4 { right: 2.2rem; top: -1.2rem; transform: rotate(14deg); background: #d3f5c4; }
+.emo { display: inline-grid; place-items: center; width: 2.4rem; height: 2.4rem; margin-right: .5rem; border-radius: 12px; background: var(--orange); border: 2px solid var(--ink); font-size: 1.2rem; vertical-align: middle; line-height: 1; }
+.row h3 .emo { width: 2.1rem; height: 2.1rem; font-size: 1.05rem; }
+
+/* Sections */
+
+section { padding-block: 4.5rem; }
+.band { background: var(--band); border-block: 2px solid var(--ink); margin-inline: calc(50% - 50vw); padding-inline: calc(50vw - 50%); }
+.sec-head { display: grid; gap: .7rem; margin-bottom: 2.5rem; }
+.split { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3rem; }
+.split > * { min-width: 0; }
+.body-stack { display: grid; gap: 1.1rem; }
+code { font-family: ui-monospace, Consolas, monospace; font-size: .88em; background: var(--tint); padding: .05em .4em; border-radius: 5px; }
+
+.list { list-style: none; margin: 1.1rem 0 0; padding: 0; }
+.list li { display: grid; grid-template-columns: 9rem 1fr; gap: 1rem; padding-block: .8rem; border-bottom: 1px dashed var(--line); }
+.list b { font-family: var(--display); font-weight: 500; }
+.list span { color: var(--muted); font-size: .98rem; }
+
+/* Features as ruled rows, not cards */
+.rows { border-top: 2px solid var(--ink); }
+.row { display: grid; grid-template-columns: 14rem 1fr; gap: 2rem; padding-block: 1.4rem; border-bottom: 1px solid var(--line); align-items: baseline; }
+.row h3 { font-size: 1.25rem; }
+.row p { color: var(--muted); }
+
+.table-wrap { overflow-x: auto; border: 2px solid var(--ink); border-radius: 12px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 40rem; font-size: .97rem; line-height: 1.6; }
+th, td { text-align: left; padding: .85rem 1.1rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+thead th { background: var(--tint); font-weight: 600; }
+tbody tr:last-child td { border-bottom: 0; }
+td.c, th.c { text-align: center; }
+.y { color: var(--pass); font-weight: 600; }
+.n { color: var(--muted); opacity: .65; }
+
+.timeline { list-style: none; margin: 0; padding: 0; border-left: 3px solid var(--ink); margin-left: .4rem; }
+.timeline li { position: relative; display: grid; grid-template-columns: 7rem 1fr; gap: 1rem; padding: 0 0 1.8rem 1.8rem; }
+.timeline li::before { content: ""; position: absolute; left: -11px; top: .55rem; width: 17px; height: 17px; border-radius: 50%; background: var(--orange); border: 3px solid var(--ink); }
+.timeline .yr { font-family: var(--display); font-size: 1.2rem; font-variant-numeric: tabular-nums; }
+.timeline p { color: var(--muted); }
+.timeline b { color: var(--ink); font-weight: 600; }
+
+/* Tabs */
+.tabs { display: inline-flex; border: 2px solid var(--ink); border-radius: 99px; padding: 4px; gap: 4px; background: var(--surface); margin-bottom: 1.8rem; flex-wrap: wrap; }
+.tab { font: inherit; font-weight: 500; cursor: pointer; border: 0; background: transparent; color: var(--ink); padding: .4rem 1.2rem; border-radius: 99px; }
+.tab[aria-selected="true"] { background: var(--ink); color: var(--paper); }
+.panel[hidden] { display: none; }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.1rem; counter-reset: s; max-width: 46rem; }
+.steps li { counter-increment: s; display: grid; grid-template-columns: 2.4rem 1fr; gap: 1rem; align-items: start; }
+.steps li::before { content: counter(s); width: 2.4rem; height: 2.4rem; border-radius: 50%; background: var(--orange); color: #1d1000; display: grid; place-items: center; font-family: var(--display); }
+.steps b { font-weight: 600; }
+.steps span { color: var(--muted); }
+
+.links { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 3rem; }
+.links a { text-decoration: none; border: 2px solid var(--ink); background: var(--surface); padding: .45rem 1.1rem; border-radius: 99px; font-size: .95rem; }
+.links a:hover { background: var(--orange); color: #1d1000; border-color: var(--ink); }
+
+footer { padding-block: 2rem 3rem; color: var(--muted); font-size: .88rem; display: grid; gap: .3rem; }
+
+@media (max-width: 860px) {
+  .hero { grid-template-columns: 1fr; gap: 3rem; padding-block: 2rem 3.5rem; }
+  .split { grid-template-columns: 1fr; gap: 2rem; }
+  .row { grid-template-columns: 1fr; gap: .3rem; }
+  section { padding-block: 3.5rem; }
+}
+@media (max-width: 560px) {
+  .list li, .timeline li { grid-template-columns: 1fr; gap: .1rem; }
+  .course { box-shadow: 5px 5px 0 var(--ink); }
+  .stamp { font-size: 1.25rem; top: 6rem; }
+  .sticker { width: 2.7rem; height: 2.7rem; font-size: 1.4rem; }
+  .sticker.s1 { left: -.5rem; }
+  .sticker.s2 { right: -.4rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .bar span, .stamp.on { transition: none; }
+}
+</style>
+<style>
+.intro { padding-block: 2.5rem 4rem; display: grid; gap: 1.4rem; }
+.intro h1 { font-size: clamp(2.3rem, 5.6vw, 4rem); font-weight: 600; line-height: 1.25; max-width: 18ch; }
+.notice { display: flex; gap: .9rem; align-items: flex-start; background: var(--surface); border: 2px solid var(--ink); border-radius: 14px; box-shadow: 5px 5px 0 var(--ink); padding: 1rem 1.2rem; max-width: 46rem; font-size: .97rem; line-height: 1.7; }
+.notice .e { font-size: 1.5rem; line-height: 1.3; }
+.todo { background: color-mix(in srgb, var(--orange) 35%, transparent); border: 1.5px dashed var(--ink); border-radius: 6px; padding: 0 .35em; white-space: nowrap; }
+.toc { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: .4rem; }
+.toc a { text-decoration: none; border: 2px solid var(--ink); background: var(--surface); padding: .35rem 1rem; border-radius: 99px; font-size: .95rem; }
+.toc a:hover { background: var(--orange); color: #1d1000; }
+
+.manual { display: grid; grid-template-columns: 17rem minmax(0, 1fr); gap: 3rem; align-items: start; }
+.manual > aside { position: sticky; top: 1.5rem; display: grid; gap: .8rem; }
+.manual > aside p { color: var(--muted); font-size: .97rem; }
+.task { padding-block: 1.6rem 2rem; border-top: 2px solid var(--ink); }
+.task:first-child { border-top: 0; padding-top: 0; }
+.task h3 { margin-bottom: 1rem; font-size: 1.3rem; }
+.task .steps { max-width: none; }
+.tip { margin-top: 1.1rem; display: flex; gap: .7rem; background: var(--surface); border-left: 5px solid var(--orange); border-radius: 0 10px 10px 0; padding: .7rem 1rem; font-size: .96rem; line-height: 1.7; max-width: 46rem; }
+.tip b { font-weight: 600; }
+.menu { font-weight: 600; background: var(--tint); border-radius: 6px; padding: 0 .35em; }
+.sample { background: var(--surface); border: 2px solid var(--ink); border-radius: 12px; padding: .9rem 1.1rem; overflow-x: auto; font-family: ui-monospace, Consolas, "Noto Sans Thai", monospace; font-size: .9rem; line-height: 1.7; margin: 1rem 0 0; max-width: 46rem; white-space: pre; }
+.task .table-wrap { max-width: 52rem; }
+.task .table-wrap table { min-width: 34rem; font-size: .93rem; }
+.phases { display: grid; gap: .8rem; margin: 0; padding: 0; list-style: none; max-width: 46rem; }
+.phases li { display: grid; grid-template-columns: 9rem 1fr; gap: 1rem; background: var(--surface); border: 2px solid var(--ink); border-radius: 12px; padding: .8rem 1rem; }
+.phases b { font-family: var(--display); font-weight: 500; }
+.phases span { color: var(--muted); font-size: .97rem; }
+@media (max-width: 860px) {
+  .manual { grid-template-columns: 1fr; gap: 1.5rem; }
+  .manual > aside { position: static; }
+}
+@media (max-width: 560px) { .phases li { grid-template-columns: 1fr; gap: .1rem; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="#"><i aria-hidden="true">🎓</i>คู่มือ Rangsit LMS</a>
+    <nav aria-label="เมนูหลัก">
+      <a href="#login">เข้าสู่ระบบ</a>
+      <a href="#course">รายวิชา</a>
+      <a href="#activities">งานและกระทู้</a>
+      <a href="#quiz">ข้อสอบ</a>
+      <a href="#grades">สมุดคะแนน</a>
+      <a href="#settings">ตั้งค่าและรายงาน</a>
+      <a href="#workshop">Workshop</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="intro">
+      <h1>คู่มือใช้งาน Rangsit LMS สำหรับอาจารย์ผู้สอน</h1>
+      <p class="lede">ทำตามทีละขั้นตั้งแต่เข้าสู่ระบบครั้งแรก จัดการรายวิชาที่ได้รับ มอบหมายงาน ออกข้อสอบ ไปจนถึงตรวจคะแนนและดูรายงาน</p>
+      <div class="notice">
+        <span class="e" aria-hidden="true">📝</span>
+        <p>คู่มือนี้เขียนสำหรับ Moodle เวอร์ชัน 4.4 ชื่อเมนูภาษาไทยอาจต่างจากที่แสดงในระบบเล็กน้อย ชื่อเมนูภาษาอังกฤษในวงเล็บช่วยให้ค้นหาเจอเมื่อหน้าจอเป็นภาษาอังกฤษ</p>
+      </div>
+      <div class="toc" aria-label="ข้ามไปหัวข้อ">
+        <a href="#login">🔐 เข้าสู่ระบบ</a>
+        <a href="#course">📚 รายวิชา</a>
+        <a href="#activities">📝 งานและกระดานสนทนา</a>
+        <a href="#quiz">🎯 คลังข้อสอบและแบบทดสอบ</a>
+        <a href="#grades">📊 สมุดคะแนน</a>
+        <a href="#settings">🛠️ ตั้งค่ารายวิชาและรายงาน</a>
+        <a href="#workshop">🤝 Workshop</a>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="band">
+  <div class="wrap">
+    <section id="login">
+      <div class="manual">
+        <aside>
+          <h2><span class="emo" aria-hidden="true">🔐</span>เข้าสู่ระบบและตั้งค่าโปรไฟล์</h2>
+          <p>ทำครั้งเดียวตอนเริ่มใช้งาน แล้วระบบจะจำค่าที่ตั้งไว้</p>
+        </aside>
+        <div>
+          <div class="task">
+            <h3>เข้าสู่ระบบ</h3>
+            <ol class="steps">
+              <li><div><b>เปิดเว็บ Rangsit LMS</b> <span>ที่ <a href="https://lms.rsu.ac.th" target="_blank" rel="noopener">lms.rsu.ac.th</a> ด้วยเบราว์เซอร์ใดก็ได้</span></div></li>
+              <li><div><b>กรอกชื่อผู้ใช้และรหัสผ่าน</b> <span>ใช้ข้อมูลเข้าสู่ระบบที่ได้รับจากมหาวิทยาลัย</span></div></li>
+              <li><div><b>กด “เข้าสู่ระบบ”</b> <span>หน้าแรกจะแสดงรายวิชาที่คุณสอน</span></div></li>
+            </ol>
+            <div class="tip"><span aria-hidden="true">💡</span><p>ลืมรหัสผ่าน ให้กด “ลืมชื่อผู้ใช้หรือรหัสผ่าน” ใต้ปุ่มเข้าสู่ระบบ หรือติดต่อศูนย์บริการทางวิชาการ (ดูช่องทางติดต่อท้ายคู่มือ)</p></div>
+          </div>
+          <div class="task">
+            <h3>แก้ไขโปรไฟล์</h3>
+            <ol class="steps">
+              <li><div><b>คลิกชื่อของคุณ</b> <span>มุมขวาบน แล้วเลือก <span class="menu">โปรไฟล์</span></span></div></li>
+              <li><div><b>กด “แก้ไขโปรไฟล์”</b> <span>เติมรูปประจำตัว ช่องทางติดต่อ และคำแนะนำตัวสั้นๆ ให้นักศึกษาเห็น</span></div></li>
+              <li><div><b>กด “อัปเดตโปรไฟล์”</b> <span>เพื่อบันทึก</span></div></li>
+            </ol>
+          </div>
+          <div class="task">
+            <h3>เปลี่ยนรหัสผ่านและภาษา</h3>
+            <ol class="steps">
+              <li><div><b>คลิกชื่อของคุณ</b> <span>แล้วเลือก <span class="menu">การตั้งค่า</span> (Preferences)</span></div></li>
+              <li><div><b>เปลี่ยนรหัสผ่าน</b> <span>เลือก “เปลี่ยนรหัสผ่าน” กรอกรหัสเดิมและรหัสใหม่ แล้วบันทึก</span></div></li>
+              <li><div><b>เปลี่ยนภาษาหน้าจอ</b> <span>เลือก “เลือกภาษา” แล้วเลือกไทยหรือ English</span></div></li>
+              <li><div><b>ตั้งการแจ้งเตือน</b> <span>เลือก “การแจ้งเตือน” เพื่อกำหนดว่าจะรับอีเมลเมื่อมีนักศึกษาส่งงานหรือโพสต์กระทู้หรือไม่</span></div></li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div class="wrap">
+  <section id="course">
+    <div class="manual">
+      <aside>
+        <h2><span class="emo" aria-hidden="true">📚</span>ขอเปิดและจัดการรายวิชา</h2>
+        <p>อาจารย์สร้างรายวิชาเองไม่ได้ ต้องกรอกแบบฟอร์มขอเปิดรายวิชา แอดมินจะเปิดรายวิชาและดึงนักศึกษาเข้ามาให้ จากนั้นคุณใส่เนื้อหาและดูแลรายวิชาต่อ</p>
+      </aside>
+      <div>
+        <div class="task">
+          <h3>ขอเปิดรายวิชา</h3>
+          <ol class="steps">
+            <li><div><b>เข้าหน้าแรกของระบบ</b> <span>ที่ <a href="https://lms.rsu.ac.th" target="_blank" rel="noopener">lms.rsu.ac.th</a> แล้วมองหาลิงก์ “แบบฟอร์มขอเปิดรายวิชา” ซึ่งมีเมนูนี้อยู่ที่หน้าแรก</span></div></li>
+            <li><div><b>กรอกแบบฟอร์ม</b> <span>ใส่รายละเอียดรายวิชาและนักศึกษาที่ต้องการให้ดึงเข้ารายวิชา และกรอก<b>อีเมลที่ใช้งานได้จริง</b> เพราะแอดมินจะแจ้งผลทางอีเมลนี้</span></div></li>
+            <li><div><b>รอแอดมินเปิดรายวิชา</b> <span>เมื่อเปิดเสร็จ แอดมินจะแจ้งอาจารย์ทางอีเมลที่กรอกไว้ในแบบฟอร์ม</span></div></li>
+            <li><div><b>เข้ารายวิชา</b> <span>เข้าสู่ระบบ แล้วคลิกชื่อรายวิชาที่หน้าแรก หรือเลือก “รายวิชาของฉัน” จากเมนูด้านบน</span></div></li>
+          </ol>
+          <div class="tip"><span aria-hidden="true">🙋</span><p><b>ไม่ได้รับอีเมล หรือไม่เห็นรายวิชา</b> ติดต่อศูนย์บริการทางวิชาการ อีเมล <a href="mailto:cyberu@rsu.ac.th">cyberu@rsu.ac.th</a> หรือโทร <a href="tel:029972222,3242">02-997-2222 ต่อ 3242</a></p></div>
+        </div>
+        <div class="task">
+          <h3>เพิ่มเนื้อหาในรายวิชา</h3>
+          <ol class="steps">
+            <li><div><b>เปิดโหมดแก้ไข</b> <span>สวิตช์ “โหมดแก้ไข” (Edit mode) มุมขวาบนของหน้ารายวิชา</span></div></li>
+            <li><div><b>เพิ่มหัวข้อ</b> <span>เลื่อนลงล่างสุดแล้วกด “เพิ่มหัวข้อ” ตั้งชื่อตามสัปดาห์หรือเรื่องที่สอน</span></div></li>
+            <li><div><b>เพิ่มไฟล์</b> <span>ลากไฟล์ PDF หรือสไลด์จากคอมพิวเตอร์มาวางในหัวข้อได้เลย</span></div></li>
+            <li><div><b>เพิ่มกิจกรรมหรือทรัพยากรอื่น</b> <span>กด “เพิ่มกิจกรรมหรือทรัพยากร” ในหัวข้อนั้น แล้วเลือกประเภท</span></div></li>
+            <li><div><b>ซ่อนหรือแสดง</b> <span>กดไอคอนรูปตาข้างรายการ ถ้ายังไม่พร้อมให้นักศึกษาเห็น ให้ซ่อนไว้ก่อน</span></div></li>
+          </ol>
+          <div class="tip"><span aria-hidden="true">💡</span><p><b>ซ่อนทั้งรายวิชา</b> ตอนที่ยังเตรียมเนื้อหา โดยตั้ง “การมองเห็นรายวิชา” เป็น “ซ่อน” ใน <span class="menu">การตั้งค่า</span> ของรายวิชา แล้วเปลี่ยนเป็น “แสดง” เมื่อพร้อมเปิดเรียน</p></div>
+        </div>
+        <div class="task">
+          <h3>นักศึกษาในรายวิชา</h3>
+          <p class="muted" style="margin-bottom:1rem">แอดมินจะดึงนักศึกษาเข้ารายวิชาให้ตามรายละเอียดที่คุณแจ้งไว้ในแบบฟอร์มขอเปิดรายวิชา คุณไม่ต้องลงทะเบียนเอง</p>
+          <ol class="steps">
+            <li><div><b>เข้าเมนู “ผู้เข้าร่วม”</b> <span>ในแถบเมนูของรายวิชา</span></div></li>
+            <li><div><b>ตรวจรายชื่อนักศึกษา</b> <span>ดูว่าครบตามที่แจ้งไว้หรือไม่</span></div></li>
+          </ol>
+          <div class="tip"><span aria-hidden="true">🙋</span><p>รายชื่อไม่ครบ หรือต้องการเพิ่มนักศึกษา ติดต่อศูนย์บริการทางวิชาการ อีเมล <a href="mailto:cyberu@rsu.ac.th">cyberu@rsu.ac.th</a> หรือโทร <a href="tel:029972222,3242">02-997-2222 ต่อ 3242</a></p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="band">
+  <div class="wrap">
+    <section id="activities">
+      <div class="manual">
+        <aside>
+          <h2><span class="emo" aria-hidden="true">📝</span>งานและกระดานสนทนา</h2>
+          <p>เพิ่มด้วยวิธีเดียวกัน: เปิดโหมดแก้ไข กด “เพิ่มกิจกรรมหรือทรัพยากร” แล้วเลือกประเภท ส่วนข้อสอบอธิบายละเอียดในหัวข้อถัดไป</p>
+        </aside>
+        <div>
+          <div class="task">
+            <h3>📝 งานที่มอบหมาย</h3>
+            <ol class="steps">
+              <li><div><b>เลือก “งานที่มอบหมาย”</b> <span>ตั้งชื่อและเขียนคำอธิบายว่านักศึกษาต้องทำอะไร</span></div></li>
+              <li><div><b>ตั้งกำหนดเวลา</b> <span>ที่ “ความพร้อมใช้งาน” กำหนดวันเริ่มรับงาน “วันครบกำหนดส่ง” และ “วันตัดการส่ง” ถ้าไม่รับงานล่าช้า</span></div></li>
+              <li><div><b>เลือกรูปแบบการส่ง</b> <span>ส่งไฟล์ หรือพิมพ์ข้อความออนไลน์ แล้วกำหนดจำนวนและขนาดไฟล์สูงสุด</span></div></li>
+              <li><div><b>ตั้งคะแนนเต็ม</b> <span>ที่ “เกรด” แล้วกด “บันทึกและแสดง”</span></div></li>
+              <li><div><b>ตรวจงาน</b> <span>เมื่อมีคนส่ง เข้ากิจกรรมนี้แล้วกด “ดูการส่งงานทั้งหมด” เลือก “ให้คะแนน” ใส่คะแนนและข้อเสนอแนะ แล้วบันทึก</span></div></li>
+            </ol>
+          </div>
+          <div class="task">
+            <h3>💭 กระดานสนทนา</h3>
+            <ol class="steps">
+              <li><div><b>เลือก “กระดานสนทนา”</b> <span>ตั้งชื่อและเขียนหัวข้อที่อยากให้ถก</span></div></li>
+              <li><div><b>เลือกประเภท</b> <span>“กระดานสนทนาสำหรับการใช้งานทั่วไป” ให้ทุกคนตั้งกระทู้ได้ หรือ “ถามตอบ” ให้นักศึกษาโพสต์ก่อนจึงเห็นคำตอบของคนอื่น</span></div></li>
+              <li><div><b>ตั้งการติดตาม</b> <span>เลือก “บังคับสมัครรับ” ถ้าอยากให้ทุกคนได้อีเมลแจ้งโพสต์ใหม่</span></div></li>
+              <li><div><b>ให้คะแนน (ถ้าต้องการ)</b> <span>ที่ “ประเมินผล” เลือกประเภทการให้คะแนนเพื่อนำเข้าสมุดคะแนน</span></div></li>
+            </ol>
+            <div class="tip"><span aria-hidden="true">📢</span><p>ทุกรายวิชามีกระดาน “ประกาศ” ให้อยู่แล้ว ใช้ส่งข่าวถึงนักศึกษาทุกคนโดยตอบกลับไม่ได้</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div class="wrap">
+  <section id="quiz">
+    <div class="manual">
+      <aside>
+        <h2><span class="emo" aria-hidden="true">🎯</span>ข้อสอบ: คลังข้อสอบและแบบทดสอบ</h2>
+        <p>ลำดับที่แนะนำ: จัดหมวดหมู่ สร้างข้อสอบเก็บในคลัง สร้างแบบทดสอบ ดึงข้อสอบมาใส่ แล้วตรวจผล ข้อสอบที่เก็บในคลังนำกลับมาใช้ซ้ำได้ทุกภาคเรียน</p>
+      </aside>
+      <div>
+        <div class="task">
+          <h3>1. สร้างหมวดหมู่ (Category) ในคลังข้อสอบ</h3>
+          <ol class="steps">
+            <li><div><b>เข้าคลังข้อสอบ</b> <span>ในรายวิชา เปิดเมนู “เพิ่มเติม” (More) แล้วเลือก “คลังข้อสอบ” (Question bank)</span></div></li>
+            <li><div><b>เปิดแท็บ “หมวดหมู่”</b> <span>(Categories) จะเห็นหมวดเริ่มต้นของรายวิชาอยู่แล้ว</span></div></li>
+            <li><div><b>เพิ่มหมวดหมู่</b> <span>เลื่อนลงล่างสุด เลือก “หมวดหมู่หลัก” (Parent category) เป็น “ด้านบน” ถ้าเป็นหมวดใหญ่ หรือเลือกหมวดแม่ถ้าเป็นหมวดย่อย ตั้งชื่อ ใส่คำอธิบาย แล้วกด “เพิ่มหมวดหมู่”</span></div></li>
+            <li><div><b>จัดโครงสร้าง</b> <span>ใช้ลูกศรขึ้นลงเรียงลำดับ หรือกดไอคอนแก้ไขเพื่อย้ายหมวดไปอยู่ใต้หมวดอื่น ถ้าลบหมวด ระบบจะถามว่าจะย้ายข้อสอบในหมวดนั้นไปไว้ที่ไหน</span></div></li>
+          </ol>
+          <pre class="sample" aria-label="ตัวอย่างโครงสร้างหมวดหมู่">ชีววิทยา (หมวดเริ่มต้นของรายวิชา)
+├─ กลางภาค
+│   ├─ บทที่ 1 เซลล์ - ง่าย
+│   ├─ บทที่ 1 เซลล์ - ยาก
+│   └─ บทที่ 2 เยื่อหุ้มเซลล์
+└─ ปลายภาค
+    ├─ บทที่ 3 พันธุกรรม
+    └─ บทที่ 4 วิวัฒนาการ</pre>
+          <div class="tip"><span aria-hidden="true">💡</span><p><b>แบ่งหมวดตามบทและระดับความยาก</b> จะดึงข้อสอบแบบสุ่มจากแต่ละหมวดได้ละเอียด เช่น ให้นักศึกษาทุกคนได้ข้อง่าย 5 ข้อ ข้อยาก 2 ข้อ แต่เป็นคนละข้อกัน</p></div>
+        </div>
+
+        <div class="task">
+          <h3>2. สร้างข้อสอบเก็บไว้ในคลัง</h3>
+          <ol class="steps">
+            <li><div><b>เลือกหมวดหมู่</b> <span>ที่แท็บ “คำถาม” (Questions) เลือกหมวดที่จะเก็บข้อสอบจากรายการด้านบน</span></div></li>
+            <li><div><b>กด “สร้างคำถามใหม่”</b> <span>(Create a new question) แล้วเลือกชนิดคำถามจากตารางด้านล่าง</span></div></li>
+            <li><div><b>กรอกรายละเอียด</b> <span>“ชื่อคำถาม” ตั้งให้ค้นหาง่าย เช่น บท2-ข้อ05 ส่วน “ข้อความคำถาม” คือโจทย์ที่นักศึกษาเห็น และ “คะแนนเริ่มต้น” คือคะแนนเต็มของข้อนี้</span></div></li>
+            <li><div><b>ใส่ตัวเลือกและเฉลย</b> <span>ปรนัยให้ใส่ตัวเลือกทีละช่อง ตัวเลือกที่ถูกตั้ง “เกรด” เป็น 100% ตัวที่ผิดเป็น “ไม่มี” แล้วเลือกว่าตอบได้ตัวเลือกเดียวหรือหลายตัว และให้สลับลำดับตัวเลือกหรือไม่</span></div></li>
+            <li><div><b>ใส่ข้อเสนอแนะ</b> <span>“ข้อเสนอแนะทั่วไป” ใช้เขียนคำอธิบายเฉลย นักศึกษาจะเห็นตามที่ตั้งไว้ในตัวเลือกการทบทวนของแบบทดสอบ</span></div></li>
+            <li><div><b>กด “บันทึกการเปลี่ยนแปลง”</b> <span>แล้วกดไอคอนแว่นขยายท้ายแถวเพื่อดูตัวอย่างข้อสอบก่อนนำไปใช้</span></div></li>
+          </ol>
+          <div class="table-wrap" style="margin-top:1.2rem">
+            <table>
+              <thead><tr><th scope="col">ชนิดคำถาม</th><th scope="col">เหมาะกับ</th><th scope="col">การตรวจ</th></tr></thead>
+              <tbody>
+                <tr><td><b>ปรนัย</b> (Multiple choice)</td><td>ข้อสอบ 4 ตัวเลือก หรือเลือกได้หลายคำตอบ</td><td>อัตโนมัติ</td></tr>
+                <tr><td><b>ถูก/ผิด</b> (True/False)</td><td>ข้อความที่ตัดสินได้ชัด</td><td>อัตโนมัติ</td></tr>
+                <tr><td><b>จับคู่</b> (Matching)</td><td>จับคู่ศัพท์กับความหมาย</td><td>อัตโนมัติ</td></tr>
+                <tr><td><b>คำตอบสั้น</b> (Short answer)</td><td>เติมคำหรือพิมพ์คำตอบสั้นๆ</td><td>อัตโนมัติ ถ้าใส่คำตอบที่ยอมรับไว้ครบ</td></tr>
+                <tr><td><b>ตัวเลข</b> (Numerical)</td><td>โจทย์คำนวณ รับค่าคลาดเคลื่อนได้</td><td>อัตโนมัติ</td></tr>
+                <tr><td><b>เติมช่องว่างในข้อความ</b> (Embedded answers / Cloze)</td><td>ย่อหน้าเดียวมีหลายช่องให้เติม</td><td>อัตโนมัติ</td></tr>
+                <tr><td><b>เรียงความ</b> (Essay)</td><td>ตอบยาว อธิบาย วิเคราะห์</td><td>อาจารย์ตรวจเอง</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="task">
+          <h3>3. นำเข้าและส่งออกข้อสอบจำนวนมาก</h3>
+          <ol class="steps">
+            <li><div><b>เตรียมไฟล์ข้อสอบ</b> <span>Moodle อ่านไฟล์ได้หลายรูปแบบ เช่น GIFT (ไฟล์ข้อความ เขียนง่าย) Aiken (ปรนัยล้วน) และ Moodle XML (เก็บได้ครบทุกชนิด)</span></div></li>
+            <li><div><b>เปิดแท็บ “นำเข้า”</b> <span>(Import) ในคลังข้อสอบ เลือกรูปแบบไฟล์ และเลือกหมวดหมู่ปลายทาง</span></div></li>
+            <li><div><b>อัปโหลดไฟล์แล้วกด “นำเข้า”</b> <span>ตรวจรายการที่แสดงว่านำเข้าครบ แล้วกดดำเนินการต่อ</span></div></li>
+            <li><div><b>ส่งออกข้อสอบ</b> <span>แท็บ “ส่งออก” (Export) เลือกรูปแบบ Moodle XML และหมวดหมู่ เพื่อสำรองไว้หรือนำไปใช้ในรายวิชาอื่น</span></div></li>
+          </ol>
+          <pre class="sample" aria-label="ตัวอย่างไฟล์ GIFT">::ข้อ 1:: เมืองหลวงของประเทศไทยคือ {
+=กรุงเทพมหานคร
+~เชียงใหม่
+~ภูเก็ต
+~ขอนแก่น
+}</pre>
+          <div class="tip"><span aria-hidden="true">💡</span><p>ตัวอย่างข้างบนคือรูปแบบ GIFT บรรทัดที่ขึ้นต้นด้วย <code>=</code> คือคำตอบที่ถูก และ <code>~</code> คือตัวเลือกที่ผิด บันทึกเป็นไฟล์ .txt แบบ UTF-8 เพื่อให้ภาษาไทยไม่เพี้ยน</p></div>
+        </div>
+
+        <div class="task">
+          <h3>4. สร้างแบบทดสอบ</h3>
+          <ol class="steps">
+            <li><div><b>เพิ่มกิจกรรม “แบบทดสอบ”</b> <span>เปิดโหมดแก้ไข กด “เพิ่มกิจกรรมหรือทรัพยากร” ตั้งชื่อและคำอธิบายในส่วน “ทั่วไป”</span></div></li>
+            <li><div><b>ส่วน “การกำหนดเวลา” (Timing)</b> <span>ตั้งวันเวลาเปิดและปิดข้อสอบ “ขีดจำกัดเวลา” เช่น 60 นาที และเลือกว่าเมื่อหมดเวลาแล้วให้ระบบส่งคำตอบอัตโนมัติหรือไม่นับถ้ายังไม่ส่ง</span></div></li>
+            <li><div><b>ส่วน “เกรด” (Grade)</b> <span>เลือกหมวดเกรดในสมุดคะแนน ตั้ง “เกรดผ่าน” จำนวนครั้งที่ทำได้ และ “วิธีการให้เกรด” เมื่อทำหลายครั้ง (ครั้งที่ดีที่สุด เฉลี่ย ครั้งแรก หรือครั้งสุดท้าย)</span></div></li>
+            <li><div><b>ส่วน “รูปแบบ” (Layout)</b> <span>กำหนดให้ขึ้นหน้าใหม่ทุกกี่ข้อ และเลือก “วิธีการนำทาง” เป็น “เรียงลำดับ” ถ้าไม่อนุญาตให้ย้อนกลับไปแก้ข้อก่อนหน้า</span></div></li>
+            <li><div><b>ส่วน “พฤติกรรมของคำถาม”</b> <span>(Question behaviour) เลือก “สลับลำดับตัวเลือกในคำถาม” เป็น “ใช่” และใช้ “ข้อเสนอแนะแบบเลื่อนเวลา” (Deferred feedback) เพื่อให้ตรวจทั้งชุดหลังส่ง ซึ่งเหมาะกับการสอบจริง</span></div></li>
+            <li><div><b>ส่วน “ตัวเลือกการทบทวน”</b> <span>(Review options) กำหนดว่าจะให้นักศึกษาเห็นคะแนน คำตอบที่ถูก และข้อเสนอแนะ ในช่วงไหน คือ ระหว่างทำ ทันทีหลังส่ง หลังจากนั้นขณะยังเปิดอยู่ และหลังปิดแบบทดสอบ ถ้าไม่อยากให้เฉลยหลุดก่อนปิดสอบ ให้ติ๊กแค่ช่อง “หลังปิดแบบทดสอบ”</span></div></li>
+            <li><div><b>ส่วน “ข้อจำกัดเพิ่มเติม”</b> <span>(Extra restrictions) ตั้งรหัสผ่านก่อนเริ่มสอบ จำกัดที่อยู่ IP ถ้าสอบในห้องคอมพิวเตอร์ หรือกำหนดช่วงห่างระหว่างการทำแต่ละครั้ง</span></div></li>
+            <li><div><b>กด “บันทึกและแสดง”</b> <span>แบบทดสอบจะยังว่างอยู่ ต้องเพิ่มข้อสอบในขั้นถัดไป</span></div></li>
+          </ol>
+        </div>
+
+        <div class="task">
+          <h3>5. ดึงข้อสอบจากคลังมาใส่ในแบบทดสอบ</h3>
+          <ol class="steps">
+            <li><div><b>เปิดหน้าแก้ไขข้อสอบ</b> <span>เข้าแบบทดสอบ แล้วกด “แก้ไขแบบทดสอบ” (Questions)</span></div></li>
+            <li><div><b>กด “เพิ่ม” แล้วเลือกวิธี</b> <span>มี 3 วิธี ให้ใช้ปนกันได้ในแบบทดสอบเดียว</span></div></li>
+          </ol>
+          <ol class="phases" style="margin-top:1rem">
+            <li><b>จากคลังข้อสอบ</b><span>เลือกหมวด ติ๊กข้อที่ต้องการ (ติ๊ก “แสดงคำถามจากหมวดย่อยด้วย” ถ้าต้องการดูหมวดย่อย) แล้วกด “เพิ่มคำถามที่เลือกไปยังแบบทดสอบ” ทุกคนได้ข้อเดียวกัน</span></li>
+            <li><b>คำถามใหม่</b><span>สร้างข้อสอบใหม่จากหน้านี้เลย ระบบจะเก็บเข้าคลังในหมวดที่เลือกให้ด้วย</span></li>
+            <li><b>คำถามสุ่ม</b><span>เลือกหมวดและจำนวนข้อ กด “เพิ่มคำถามสุ่ม” นักศึกษาแต่ละคนจะได้ข้อต่างกัน ช่วยลดการลอกกัน</span></li>
+          </ol>
+          <ol class="steps" style="margin-top:1.4rem">
+            <li><div><b>ตั้งคะแนนต่อข้อ</b> <span>กดไอคอนดินสอข้างช่อง “คะแนนสูงสุด” ของแต่ละข้อ แล้วดู “คะแนนรวม” (Total of marks)</span></div></li>
+            <li><div><b>ตั้ง “เกรดสูงสุด”</b> <span>(Maximum grade) มุมบนขวา คือคะแนนเต็มที่จะส่งเข้าสมุดคะแนน ระบบแปลงจากคะแนนรวมให้เอง</span></div></li>
+            <li><div><b>จัดหน้าและหัวข้อ</b> <span>เพิ่มหัวข้อแบ่งตอน ลากย้ายข้อ หรือกด “เรียงหน้าใหม่” (Repaginate) เพื่อแบ่งหน้าตามจำนวนข้อที่ตั้งไว้</span></div></li>
+            <li><div><b>ลองทำก่อนเปิดจริง</b> <span>กด “ดูตัวอย่างแบบทดสอบ” เพื่อทำตั้งแต่ต้นจนส่ง แล้วตรวจคะแนนว่าตรงกับที่คิด</span></div></li>
+          </ol>
+          <div class="tip"><span aria-hidden="true">💡</span><p><b>การสุ่มจากหมวด</b> ต้องมีข้อสอบในหมวดมากกว่าจำนวนที่สุ่ม และข้อในหมวดเดียวกันควรมีคะแนนเท่ากัน ไม่เช่นนั้นนักศึกษาแต่ละคนจะได้คะแนนเต็มไม่เท่ากัน</p></div>
+        </div>
+
+        <div class="task">
+          <h3>6. ดูผลและตรวจข้อสอบ</h3>
+          <ol class="steps">
+            <li><div><b>ดูคะแนนรายคน</b> <span>เข้าแบบทดสอบ เปิดแท็บ “ผลลัพธ์” (Results) แล้วเลือก “เกรด” ดาวน์โหลดเป็น Excel ได้ที่ท้ายตาราง</span></div></li>
+            <li><div><b>ดูคำตอบรายข้อ</b> <span>เลือก “การตอบ” (Responses) เพื่อดูว่านักศึกษาแต่ละคนตอบอะไร</span></div></li>
+            <li><div><b>ดูสถิติข้อสอบ</b> <span>เลือก “สถิติ” (Statistics) เห็นค่าความยากและความสามารถในการจำแนกของแต่ละข้อ ใช้ปรับปรุงข้อสอบในเทอมหน้า</span></div></li>
+            <li><div><b>ตรวจเรียงความ</b> <span>เลือก “ตรวจด้วยตนเอง” (Manual grading) ให้คะแนนและเขียนข้อเสนอแนะทีละข้อ</span></div></li>
+            <li><div><b>ให้เวลาเพิ่มรายบุคคล</b> <span>เลือก “การแทนที่” (Overrides) กด “เพิ่มการแทนที่ผู้ใช้” แล้วตั้งเวลาหรือจำนวนครั้งใหม่ให้เฉพาะคนนั้น</span></div></li>
+            <li><div><b>แก้เฉลยที่ผิดหลังสอบ</b> <span>แก้ที่ข้อสอบนั้น แล้วกด “ตรวจใหม่ทั้งหมด” (Regrade all) ในหน้าผลลัพธ์ คะแนนทุกคนจะคำนวณใหม่</span></div></li>
+          </ol>
+          <div class="tip"><span aria-hidden="true">⚠️</span><p>อย่าลบหรือแก้ตัวเลือกของข้อสอบในระหว่างที่ยังมีคนกำลังทำข้อสอบอยู่ เพราะอาจทำให้คะแนนของผู้ที่ทำอยู่คลาดเคลื่อน</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="band">
+  <div class="wrap">
+  <section id="grades">
+    <div class="manual">
+      <aside>
+        <h2><span class="emo" aria-hidden="true">📊</span>สมุดคะแนนและรายงาน</h2>
+        <p>คะแนนจากทุกกิจกรรมที่ตั้งคะแนนไว้จะไหลเข้าสมุดคะแนนเอง ไม่ต้องกรอกซ้ำ</p>
+      </aside>
+      <div>
+        <div class="task">
+          <h3>ดูและแก้คะแนน</h3>
+          <ol class="steps">
+            <li><div><b>เข้าเมนู “เกรด”</b> <span>ในแถบเมนูของรายวิชา</span></div></li>
+            <li><div><b>ดู “รายงานผู้ตรวจ”</b> <span>(Grader report) ตารางคะแนนนักศึกษาทุกคนทุกกิจกรรม</span></div></li>
+            <li><div><b>แก้คะแนนโดยตรง</b> <span>เปิดโหมดแก้ไขของตาราง คลิกช่องคะแนนเพื่อพิมพ์ใหม่ แล้วกดบันทึก</span></div></li>
+          </ol>
+        </div>
+        <div class="task">
+          <h3>ตั้งสัดส่วนคะแนนและเกรด</h3>
+          <ol class="steps">
+            <li><div><b>เข้า “การตั้งค่าสมุดคะแนน”</b> <span>(Gradebook setup) จากเมนู “เกรด”</span></div></li>
+            <li><div><b>จัดกลุ่มคะแนน</b> <span>สร้างหมวด เช่น “คะแนนเก็บ” “กลางภาค” “ปลายภาค” แล้วลากกิจกรรมเข้าหมวด</span></div></li>
+            <li><div><b>ตั้งน้ำหนัก</b> <span>เลือกวิธีรวมคะแนนของหมวดและใส่น้ำหนัก เช่น คะแนนเก็บ 40 กลางภาค 30 ปลายภาค 30</span></div></li>
+            <li><div><b>ตั้งเกณฑ์เกรด (ถ้าต้องใช้)</b> <span>ที่ “ตัวอักษรเกรด” กำหนดช่วงคะแนนของแต่ละเกรดตามที่ผู้สอนหรือคณะตกลงกัน ระบบไม่มีเกณฑ์ตายตัว</span></div></li>
+          </ol>
+        </div>
+        <div class="task">
+          <h3>ส่งออกคะแนน</h3>
+          <ol class="steps">
+            <li><div><b>เมนู “เกรด” แล้วเลือก “ส่งออก”</b> <span>เลือก Excel หรือ CSV</span></div></li>
+            <li><div><b>เลือกกิจกรรมที่ต้องการ</b> <span>แล้วกดดาวน์โหลด</span></div></li>
+          </ol>
+          <div class="tip"><span aria-hidden="true">📈</span><p>อยากดูความคืบหน้าหรือการเข้าเรียนของนักศึกษา ดูหัวข้อ <a href="#settings">ตั้งค่ารายวิชาและรายงาน</a></p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+  </div>
+</div>
+
+<div class="wrap">
+  <section id="settings">
+    <div class="manual">
+      <aside>
+        <h2><span class="emo" aria-hidden="true">🛠️</span>ตั้งค่ารายวิชาและรายงาน</h2>
+        <p>ตั้งค่าครั้งเดียวต้นเทอม ระบบจะติดตามความคืบหน้าและควบคุมลำดับการเรียนให้เอง รายงานในรายวิชาจะมีข้อมูลก็ต่อเมื่อตั้งค่าเหล่านี้ไว้</p>
+      </aside>
+      <div>
+        <div class="task">
+          <h3>1. การเสร็จสิ้นกิจกรรม (Activity completion)</h3>
+          <ol class="steps">
+            <li><div><b>เปิดระบบติดตาม</b> <span>ที่เมนู “การตั้งค่า” ของรายวิชา เลื่อนไปส่วน “การติดตามการเสร็จสิ้น” (Completion tracking) ตั้ง “เปิดใช้งานการติดตามการเสร็จสิ้นกิจกรรม” เป็น “ใช่” แล้วบันทึก</span></div></li>
+            <li><div><b>เปิดการตั้งค่าของกิจกรรม</b> <span>เปิดโหมดแก้ไข กดเมนูจุดสามจุดของกิจกรรมหรือไฟล์ แล้วเลือก “แก้ไขการตั้งค่า” เลื่อนไปส่วน “การเสร็จสิ้นกิจกรรม”</span></div></li>
+            <li><div><b>เลือกเงื่อนไขว่าเสร็จเมื่อไร</b> <span>“ไม่แสดงการเสร็จสิ้น” “นักเรียนทำเครื่องหมายเสร็จเอง” หรือ “แสดงว่าเสร็จเมื่อเป็นไปตามเงื่อนไข” ซึ่งมีให้เลือกตามชนิดกิจกรรม ดูตารางด้านล่าง</span></div></li>
+            <li><div><b>ตั้งวันที่คาดว่าจะเสร็จ</b> <span>ช่อง “คาดว่าจะเสร็จภายใน” (Expect completed on) ใช้เป็นกำหนดให้นักศึกษาเห็นในปฏิทิน</span></div></li>
+            <li><div><b>บันทึก</b> <span>นักศึกษาจะเห็นวงกลมข้างกิจกรรม เมื่อเสร็จวงกลมจะกลายเป็นเครื่องหมายถูก</span></div></li>
+          </ol>
+          <div class="table-wrap" style="margin-top:1.2rem">
+            <table>
+              <thead><tr><th scope="col">กิจกรรม</th><th scope="col">เงื่อนไขที่เลือกได้</th></tr></thead>
+              <tbody>
+                <tr><td><b>ไฟล์ / หน้า / URL</b></td><td>ต้องเปิดดู</td></tr>
+                <tr><td><b>งานที่มอบหมาย</b></td><td>ต้องส่งงาน หรือต้องได้รับคะแนน</td></tr>
+                <tr><td><b>แบบทดสอบ</b></td><td>ต้องได้รับคะแนน ต้องได้คะแนนผ่าน หรือต้องทำจนใช้ครบจำนวนครั้ง</td></tr>
+                <tr><td><b>กระดานสนทนา</b></td><td>ต้องตั้งกระทู้หรือตอบกลับอย่างน้อยตามจำนวนที่กำหนด</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="tip"><span aria-hidden="true">💡</span><p>ถ้าตั้งหลายกิจกรรมพร้อมกัน ให้เปิดเมนู “เพิ่มเติม” แล้วเลือก “การเสร็จสิ้นรายวิชา” (Course completion) จะมีแท็บแก้การเสร็จสิ้นของทุกกิจกรรมพร้อมกัน (Bulk edit) และแท็บตั้งค่าเริ่มต้นของแต่ละชนิดกิจกรรม (Default activity completion) ไม่ต้องเข้าทีละกิจกรรม</p></div>
+        </div>
+
+        <div class="task">
+          <h3>2. จำกัดการเข้าถึง (Restrict access)</h3>
+          <ol class="steps">
+            <li><div><b>เปิดการตั้งค่าของกิจกรรมหรือหัวข้อ</b> <span>เปิดโหมดแก้ไข เลือก “แก้ไขการตั้งค่า” แล้วเลื่อนไปส่วน “จำกัดการเข้าถึง”</span></div></li>
+            <li><div><b>กด “เพิ่มข้อจำกัด”</b> <span>(Add restriction) แล้วเลือกชนิดเงื่อนไขจากตารางด้านล่าง</span></div></li>
+            <li><div><b>ตั้งค่าเงื่อนไข</b> <span>เช่น เลือกวันที่เริ่มเปิด หรือเลือกกิจกรรมที่ต้องทำให้เสร็จก่อน</span></div></li>
+            <li><div><b>เลือกการแสดงผลด้วยไอคอนรูปตา</b> <span>ตาเปิด: นักศึกษาเห็นกิจกรรมเป็นสีเทาพร้อมข้อความบอกเงื่อนไข ตาขีดฆ่า: ซ่อนไว้จนกว่าจะผ่านเงื่อนไข</span></div></li>
+            <li><div><b>บันทึกและทดสอบ</b> <span>เมนูชื่อของคุณมุมขวาบน เลือก “สลับบทบาทเป็น…” แล้วเลือก “นักศึกษา” เพื่อดูหน้าจอแบบนักศึกษาจริง</span></div></li>
+          </ol>
+          <div class="table-wrap" style="margin-top:1.2rem">
+            <table>
+              <thead><tr><th scope="col">ชนิดเงื่อนไข</th><th scope="col">ใช้ทำอะไร</th></tr></thead>
+              <tbody>
+                <tr><td><b>วันที่</b> (Date)</td><td>เปิดหรือปิดกิจกรรมตามวันเวลา เช่น เปิดแบบทดสอบกลางภาคเฉพาะช่วงสอบ</td></tr>
+                <tr><td><b>การเสร็จสิ้นกิจกรรม</b> (Activity completion)</td><td>ต้องทำกิจกรรมอื่นเสร็จก่อน เช่น ผ่านแบบทดสอบบทที่ 1 จึงเปิดบทที่ 2</td></tr>
+                <tr><td><b>เกรด</b> (Grade)</td><td>ต้องได้คะแนนไม่ต่ำกว่าหรือไม่เกินที่กำหนด เช่น เปิดสอบซ่อมเฉพาะคนที่ได้ต่ำกว่า 60%</td></tr>
+                <tr><td><b>กลุ่ม</b> (Group)</td><td>เปิดเฉพาะนักศึกษาในกลุ่ม เช่น กลุ่มเรียนเช้ากับกลุ่มเรียนบ่ายได้ข้อสอบคนละชุด</td></tr>
+                <tr><td><b>โปรไฟล์ผู้ใช้</b> (User profile)</td><td>เปิดตามข้อมูลในโปรไฟล์ เช่น คณะหรือสาขา</td></tr>
+                <tr><td><b>ชุดข้อจำกัด</b> (Restriction set)</td><td>รวมหลายเงื่อนไขเป็นกลุ่ม เช่น ต้องผ่านข้อ ก. และอย่างน้อยหนึ่งใน ข. หรือ ค.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="tip"><span aria-hidden="true">💡</span><p>ถ้ามีหลายเงื่อนไข ให้เลือกว่านักศึกษา “ต้อง” ตรงกับ “ทุกเงื่อนไข” หรือ “อย่างน้อยหนึ่งเงื่อนไข” และถ้าใช้เงื่อนไขการเสร็จสิ้นกิจกรรม ต้องตั้ง Activity completion ของกิจกรรมต้นทางในข้อ 1 ก่อน</p></div>
+        </div>
+
+        <div class="task">
+          <h3>3. การตั้งค่ารายวิชาอื่นที่ควรรู้</h3>
+          <p class="muted" style="margin-bottom:1rem">เปิดได้จากเมนู “การตั้งค่า” ของรายวิชา</p>
+          <ol class="phases">
+            <li><b>รูปแบบกลุ่ม</b><span>เปิดโหมด “กลุ่มที่แยกกัน” หรือ “กลุ่มที่มองเห็นกัน” ถ้าสอนหลายตอนเรียน นักศึกษาจะเห็นเฉพาะกลุ่มตัวเอง และใช้ร่วมกับเงื่อนไขกลุ่มในข้อ 2 ได้</span></li>
+            <li><b>แสดงสมุดคะแนน</b><span>เลือกว่าให้นักศึกษาเห็นคะแนนของตัวเองหรือไม่ ปิดไว้ได้ถ้ายังไม่พร้อมประกาศคะแนน</span></li>
+            <li><b>วันที่เริ่มและสิ้นสุด</b><span>กำหนดช่วงเวลาของรายวิชา ใช้ในการจัดเรียงและแสดงผลในหน้ารายวิชาของนักศึกษา</span></li>
+            <li><b>การมองเห็นรายวิชา</b><span>ซ่อนไว้ระหว่างเตรียมเนื้อหา แล้วเปลี่ยนเป็น “แสดง” เมื่อพร้อมเปิดเรียน</span></li>
+          </ol>
+        </div>
+
+        <div class="task">
+          <h3>4. เมนู “รายงาน” (Reports) ในรายวิชา</h3>
+          <ol class="steps">
+            <li><div><b>เปิดเมนู “รายงาน”</b> <span>ในแถบเมนูของรายวิชา แล้วเลือกรายงานที่ต้องการจากตารางด้านล่าง</span></div></li>
+            <li><div><b>กรองข้อมูล</b> <span>เลือกกิจกรรม กลุ่ม ช่วงเวลา หรือบทบาทก่อนกดแสดงผล</span></div></li>
+            <li><div><b>ดาวน์โหลด</b> <span>ที่ท้ายตารางส่วนใหญ่มีปุ่มดาวน์โหลดเป็น CSV หรือ Excel</span></div></li>
+          </ol>
+          <div class="table-wrap" style="margin-top:1.2rem">
+            <table>
+              <thead><tr><th scope="col">รายงาน</th><th scope="col">ดูอะไรได้</th><th scope="col">เหมาะเมื่อ</th></tr></thead>
+              <tbody>
+                <tr><td><b>การเสร็จสิ้นกิจกรรม</b> (Activity completion)</td><td>ตารางนักศึกษาแต่ละคนกับกิจกรรมแต่ละอย่าง ว่าทำเสร็จหรือยัง</td><td>ติดตามคนที่ยังไม่ทำ และส่งข้อความเตือน (ต้องตั้งข้อ 1 ก่อน)</td></tr>
+                <tr><td><b>การมีส่วนร่วมในรายวิชา</b> (Course participation)</td><td>ใครเปิดดู โพสต์ หรือส่งงานในกิจกรรมที่เลือก ในช่วงเวลาที่กำหนด</td><td>เช็กการเข้าร่วม และส่งข้อความหาคนที่ไม่เคยเปิดกิจกรรม</td></tr>
+                <tr><td><b>บันทึกการใช้งาน</b> (Logs)</td><td>ทุกการกระทำของผู้ใช้ กรองตามวัน ผู้ใช้ และกิจกรรมได้</td><td>ตรวจว่านักศึกษาเข้าระบบหรือเปิดไฟล์เมื่อไร ใช้เป็นหลักฐานกรณีมีข้อโต้แย้ง</td></tr>
+                <tr><td><b>บันทึกสด</b> (Live logs)</td><td>การเคลื่อนไหวในรายวิชาย้อนหลัง 1 ชั่วโมง และอัปเดตเรื่อยๆ</td><td>ดูระหว่างคาบเรียนออนไลน์หรือระหว่างสอบ</td></tr>
+                <tr><td><b>รายงานกิจกรรม</b> (Activity report)</td><td>จำนวนครั้งที่แต่ละกิจกรรมถูกเปิดดู</td><td>ดูว่าสื่อไหนมีคนใช้มาก สื่อไหนไม่มีใครเปิด</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="tip"><span aria-hidden="true">💡</span><p>รายงานเฉพาะของแบบทดสอบอยู่ในแท็บ “ผลลัพธ์” ของแบบทดสอบเอง ดูรายละเอียดในหัวข้อ <a href="#quiz">ข้อสอบ</a> ข้อ 6</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="band">
+  <div class="wrap">
+    <section id="workshop">
+      <div class="manual">
+        <aside>
+          <h2><span class="emo" aria-hidden="true">🤝</span>เมนู Workshop</h2>
+          <p>กิจกรรมให้นักศึกษาส่งงานแล้วประเมินงานของเพื่อนกันเอง ได้คะแนนสองส่วน คือคะแนนงานของตัวเอง และคะแนนคุณภาพการประเมินที่ให้เพื่อน</p>
+        </aside>
+        <div>
+          <div class="task">
+            <h3>สร้าง Workshop</h3>
+            <ol class="steps">
+              <li><div><b>เลือก “เวิร์กช็อป”</b> <span>จาก “เพิ่มกิจกรรมหรือทรัพยากร” แล้วตั้งชื่อ</span></div></li>
+              <li><div><b>ตั้งคะแนน</b> <span>กำหนดคะแนนเต็มของ “เกรดสำหรับการส่งงาน” และ “เกรดสำหรับการประเมิน”</span></div></li>
+              <li><div><b>เลือกกลยุทธ์การให้คะแนน</b> <span>มี 4 แบบ คือ สะสมคะแนน ความคิดเห็น จำนวนข้อผิด และรูบริก ส่วนใหญ่ใช้ “สะสมคะแนน” หรือ “รูบริก”</span></div></li>
+              <li><div><b>เขียนคำแนะนำ</b> <span>บอกนักศึกษาว่าต้องส่งอะไรและต้องประเมินอย่างไร แล้วกด “บันทึกและแสดง”</span></div></li>
+              <li><div><b>กำหนดเกณฑ์การประเมิน</b> <span>เข้า “แก้ไขแบบฟอร์มการประเมิน” แล้วใส่ข้อและคะแนนของแต่ละข้อ</span></div></li>
+            </ol>
+          </div>
+          <div class="task">
+            <h3>ดำเนินกิจกรรมทีละระยะ</h3>
+            <p class="muted" style="margin-bottom:1rem">Workshop เดินหน้าทีละระยะ และอาจารย์เป็นคนกดเปลี่ยนระยะ นักศึกษาทำได้เฉพาะสิ่งที่ระยะนั้นเปิดให้</p>
+            <ol class="phases">
+              <li><b>1. ระยะตั้งค่า</b><span>อาจารย์ตั้งค่าและเตรียมแบบฟอร์มประเมิน นักศึกษายังทำอะไรไม่ได้</span></li>
+              <li><b>2. ระยะส่งงาน</b><span>นักศึกษาส่งงานของตัวเอง กด “สลับไปยังระยะส่งงาน” เพื่อเปิด</span></li>
+              <li><b>3. ระยะประเมิน</b><span>เข้า “จัดสรรงานให้ประเมิน” เลือกสุ่มหรือกำหนดเอง แล้วสลับระยะ นักศึกษาจะเห็นงานเพื่อนที่ต้องประเมิน</span></li>
+              <li><b>4. ให้คะแนนการประเมิน</b><span>กด “คำนวณเกรดสำหรับการส่งงาน” และ “คำนวณเกรดสำหรับการประเมิน” แล้วตรวจผล ปรับแก้ได้ก่อนปิด</span></li>
+              <li><b>5. ปิดกิจกรรม</b><span>กดสลับไประยะปิด คะแนนจะส่งเข้าสมุดคะแนน และนักศึกษาเห็นผล</span></li>
+            </ol>
+            <div class="tip"><span aria-hidden="true">💡</span><p>ถ้ากำหนดจัดสรรแบบสุ่ม ให้ตั้ง “จำนวนการประเมินต่อคน” อย่างน้อย 2-3 งาน เพื่อให้คะแนนเที่ยงตรงขึ้น และทดสอบด้วย “ส่งตัวอย่างงาน” ก่อนใช้กับนักศึกษาจริง</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div class="wrap">
+  <section id="help" style="padding-block:3.5rem 2rem">
+    <div class="sec-head" style="margin-bottom:1.2rem">
+      <h2><span class="emo" aria-hidden="true">🙋</span>ติดต่อขอความช่วยเหลือ</h2>
+    </div>
+    <p class="muted">ปัญหาเกี่ยวกับบัญชี การลงทะเบียน หรือสิทธิ์สร้างรายวิชา ติดต่อ <b>ศูนย์บริการทางวิชาการ</b> อีเมล <a href="mailto:cyberu@rsu.ac.th">cyberu@rsu.ac.th</a> โทร <a href="tel:029972222,3242">02-997-2222 ต่อ 3242</a></p>
+    <div class="links">
+      <a href="https://docs.moodle.org" target="_blank" rel="noopener">docs.moodle.org คู่มือ Moodle ฉบับทางการ</a>
+      <a href="https://moodle.academy" target="_blank" rel="noopener">Moodle Academy คอร์สเรียนฟรี</a>
+    </div>
+  </section>
+  <footer>
+    <span>คู่มือสำหรับอาจารย์ผู้สอน Rangsit LMS (Moodle 4.4) จัดทำโดยอ้างอิงขั้นตอนมาตรฐานของ Moodle</span>
+    <span>Moodle™ เป็นเครื่องหมายการค้าของ Moodle Pty Ltd</span>
+  </footer>
+</div>
+</body>
+</html>
