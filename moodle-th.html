@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>รู้จัก Moodle ในหน้าเดียว</title>
+<meta name="description" content="แนะนำ Moodle ระบบจัดการการเรียนรู้แบบโอเพนซอร์ส สำหรับครูและนักเรียน">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&family=Mitr:wght@400;500;600&display=swap">
+<style>
+:root {
+  --paper: #fff0df;
+  --grid: #ffd9b3;
+  --band: #ffc489;
+  --surface: #ffffff;
+  --ink: #2b1608;
+  --muted: #6b4426;
+  --line: #f0c9a0;
+  --orange: #f98012;
+  --orange-ink: #8a3f00;
+  --pass: #1f9d6b;
+  --tint: #ffe0bf;
+  --display: "Mitr", "Noto Sans Thai", system-ui, sans-serif;
+  --body: "IBM Plex Sans Thai", "Noto Sans Thai", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #1f1209; --grid: #33200f; --band: #4a2a0f; --surface: #2b1a0e; --ink: #fff0df; --muted: #e0bf9d;
+    --line: #4a3018; --orange: #ff9a3d; --orange-ink: #ffc58f; --pass: #4fd09a; --tint: #3d2712;
+    color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0; color: var(--ink); font-family: var(--body); font-size: 1.0625rem; line-height: 1.8;
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 32px 32px;
+  padding-inline: max(16px, env(safe-area-inset-left, 0px));
+}
+.wrap { max-width: 68rem; margin: 0 auto; }
+a { color: inherit; text-underline-offset: 4px; }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--orange); outline-offset: 3px; border-radius: 6px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 500; line-height: 1.35; margin: 0; text-wrap: balance; }
+h2 { font-size: clamp(1.7rem, 3.6vw, 2.35rem); }
+h3 { font-size: 1.2rem; }
+p { margin: 0; max-width: 62ch; }
+.muted { color: var(--muted); }
+.hl { background: linear-gradient(transparent 55%, color-mix(in srgb, var(--orange) 55%, transparent) 55%); padding-inline: .1em; }
+
+/* Top bar */
+.top { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: .75rem 1.5rem; padding-block: 1.25rem; }
+.brand { font-family: var(--display); font-size: 1.25rem; text-decoration: none; display: flex; align-items: center; gap: .6rem; }
+.brand i { width: 2.2rem; height: 2.2rem; border-radius: 12px 12px 12px 3px; border: 2px solid var(--ink); background: var(--orange); display: grid; place-items: center; color: #fff; font-style: normal; font-size: 1.2rem; }
+.top nav { display: flex; gap: 1.4rem; flex-wrap: wrap; font-size: .97rem; }
+.top nav a { text-decoration: none; padding-block: .2rem; border-bottom: 2px solid transparent; }
+.top nav a:hover { border-color: var(--orange); }
+
+/* Hero */
+.hero { display: grid; grid-template-columns: 1.05fr 1fr; gap: 3.5rem; align-items: center; padding-block: 3rem 5rem; }
+.hero > * { min-width: 0; }
+.hero h1 { font-size: clamp(2.5rem, 6.2vw, 4.4rem); font-weight: 600; line-height: 1.25; letter-spacing: -.01em; margin-bottom: 1.4rem; }
+.lede { font-size: 1.15rem; color: var(--muted); }
+.name-note { margin-top: 1.6rem; font-size: .95rem; color: var(--muted); border-left: 3px solid var(--orange); padding-left: .9rem; max-width: 48ch; }
+
+/* Course card (the one memorable element) */
+.course-wrap { position: relative; padding: 14px 0 0; }
+.course {
+  position: relative; background: var(--surface); border: 2px solid var(--ink); border-radius: 14px;
+  box-shadow: 8px 8px 0 var(--ink); transform: rotate(-1deg); overflow: hidden;
+}
+.tape { position: absolute; z-index: 2; top: 2px; left: 50%; width: 110px; height: 28px; margin-left: -55px; background: color-mix(in srgb, var(--orange) 80%, transparent); transform: rotate(2deg); }
+.course-head { padding: 1.5rem 1.4rem 1rem; border-bottom: 2px solid var(--ink); }
+.crumbs { font-size: .8rem; color: var(--muted); }
+.course-head h3 { margin: .2rem 0 .8rem; font-size: 1.1rem; }
+.progress { display: flex; align-items: center; gap: .8rem; font-size: .85rem; color: var(--muted); }
+.bar { flex: 1; height: 10px; border-radius: 99px; background: var(--tint); border: 1.5px solid var(--ink); overflow: hidden; }
+.bar span { display: block; height: 100%; width: 0; background: var(--orange); transition: width .4s ease; }
+.week { padding: .55rem 1.4rem; background: var(--tint); font-weight: 600; font-size: .92rem; border-bottom: 1px solid var(--line); }
+.acts { list-style: none; margin: 0; padding: 0; }
+.acts li { display: flex; align-items: center; gap: .85rem; padding: .8rem 1.4rem; border-bottom: 1px solid var(--line); }
+.acts .ico { flex: none; width: 2.5rem; height: 2.5rem; border-radius: 12px; display: grid; place-items: center; font-size: 1.35rem; line-height: 1; background: var(--tint); border: 1.5px solid var(--ink); }
+.acts .name { flex: 1; min-width: 0; font-size: .95rem; line-height: 1.5; }
+.acts .name small { display: block; color: var(--muted); font-size: .8rem; }
+.done { flex: none; font: inherit; font-size: .8rem; cursor: pointer; background: transparent; color: var(--ink); border: 1.5px solid var(--ink); border-radius: 99px; padding: .2rem .8rem; }
+.done:hover { background: var(--tint); }
+.done[aria-pressed="true"] { background: var(--pass); border-color: var(--pass); color: #fff; }
+.course-foot { padding: .7rem 1.4rem; font-size: .8rem; color: var(--muted); }
+.stamp {
+  position: absolute; right: 1.2rem; top: 5.2rem; z-index: 3; pointer-events: none;
+  border: 4px solid var(--pass); color: var(--pass); border-radius: 10px; padding: .1rem .9rem;
+  font-family: var(--display); font-size: 1.6rem; background: color-mix(in srgb, var(--surface) 88%, transparent);
+  opacity: 0; transform: rotate(-12deg) scale(2.2);
+}
+.stamp.on { opacity: 1; transform: rotate(-12deg) scale(1); transition: transform .28s cubic-bezier(.3,1.6,.5,1), opacity .12s; }
+
+/* Stickers */
+.sticker { position: absolute; z-index: 4; display: grid; place-items: center; width: 3.4rem; height: 3.4rem; font-size: 1.8rem; line-height: 1; background: var(--surface); border: 2px solid var(--ink); border-radius: 50%; box-shadow: 3px 3px 0 var(--ink); pointer-events: none; }
+.sticker.s1 { left: -1.4rem; top: 38%; transform: rotate(-12deg); background: #fff3a8; }
+.sticker.s2 { right: -1rem; bottom: 3.5rem; transform: rotate(10deg); background: #ffc2d8; }
+.sticker.s3 { left: 2.5rem; bottom: -1.6rem; transform: rotate(6deg); background: #bfe9ff; }
+.sticker.s4 { right: 2.2rem; top: -1.2rem; transform: rotate(14deg); background: #d3f5c4; }
+.emo { display: inline-grid; place-items: center; width: 2.4rem; height: 2.4rem; margin-right: .5rem; border-radius: 12px; background: var(--orange); border: 2px solid var(--ink); font-size: 1.2rem; vertical-align: middle; line-height: 1; }
+.row h3 .emo { width: 2.1rem; height: 2.1rem; font-size: 1.05rem; }
+
+/* Sections */
+
+section { padding-block: 4.5rem; }
+.band { background: var(--band); border-block: 2px solid var(--ink); margin-inline: calc(50% - 50vw); padding-inline: calc(50vw - 50%); }
+.sec-head { display: grid; gap: .7rem; margin-bottom: 2.5rem; }
+.split { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 3rem; }
+.split > * { min-width: 0; }
+.body-stack { display: grid; gap: 1.1rem; }
+code { font-family: ui-monospace, Consolas, monospace; font-size: .88em; background: var(--tint); padding: .05em .4em; border-radius: 5px; }
+
+.list { list-style: none; margin: 1.1rem 0 0; padding: 0; }
+.list li { display: grid; grid-template-columns: 9rem 1fr; gap: 1rem; padding-block: .8rem; border-bottom: 1px dashed var(--line); }
+.list b { font-family: var(--display); font-weight: 500; }
+.list span { color: var(--muted); font-size: .98rem; }
+
+/* Features as ruled rows, not cards */
+.rows { border-top: 2px solid var(--ink); }
+.row { display: grid; grid-template-columns: 14rem 1fr; gap: 2rem; padding-block: 1.4rem; border-bottom: 1px solid var(--line); align-items: baseline; }
+.row h3 { font-size: 1.25rem; }
+.row p { color: var(--muted); }
+
+.table-wrap { overflow-x: auto; border: 2px solid var(--ink); border-radius: 12px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 40rem; font-size: .97rem; line-height: 1.6; }
+th, td { text-align: left; padding: .85rem 1.1rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+thead th { background: var(--tint); font-weight: 600; }
+tbody tr:last-child td { border-bottom: 0; }
+td.c, th.c { text-align: center; }
+.y { color: var(--pass); font-weight: 600; }
+.n { color: var(--muted); opacity: .65; }
+
+.timeline { list-style: none; margin: 0; padding: 0; border-left: 3px solid var(--ink); margin-left: .4rem; }
+.timeline li { position: relative; display: grid; grid-template-columns: 7rem 1fr; gap: 1rem; padding: 0 0 1.8rem 1.8rem; }
+.timeline li::before { content: ""; position: absolute; left: -11px; top: .55rem; width: 17px; height: 17px; border-radius: 50%; background: var(--orange); border: 3px solid var(--ink); }
+.timeline .yr { font-family: var(--display); font-size: 1.2rem; font-variant-numeric: tabular-nums; }
+.timeline p { color: var(--muted); }
+.timeline b { color: var(--ink); font-weight: 600; }
+
+/* Tabs */
+.tabs { display: inline-flex; border: 2px solid var(--ink); border-radius: 99px; padding: 4px; gap: 4px; background: var(--surface); margin-bottom: 1.8rem; flex-wrap: wrap; }
+.tab { font: inherit; font-weight: 500; cursor: pointer; border: 0; background: transparent; color: var(--ink); padding: .4rem 1.2rem; border-radius: 99px; }
+.tab[aria-selected="true"] { background: var(--ink); color: var(--paper); }
+.panel[hidden] { display: none; }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.1rem; counter-reset: s; max-width: 46rem; }
+.steps li { counter-increment: s; display: grid; grid-template-columns: 2.4rem 1fr; gap: 1rem; align-items: start; }
+.steps li::before { content: counter(s); width: 2.4rem; height: 2.4rem; border-radius: 50%; background: var(--orange); color: #1d1000; display: grid; place-items: center; font-family: var(--display); }
+.steps b { font-weight: 600; }
+.steps span { color: var(--muted); }
+
+.links { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 3rem; }
+.links a { text-decoration: none; border: 2px solid var(--ink); background: var(--surface); padding: .45rem 1.1rem; border-radius: 99px; font-size: .95rem; }
+.links a:hover { background: var(--orange); color: #1d1000; border-color: var(--ink); }
+
+footer { padding-block: 2rem 3rem; color: var(--muted); font-size: .88rem; display: grid; gap: .3rem; }
+
+@media (max-width: 860px) {
+  .hero { grid-template-columns: 1fr; gap: 3rem; padding-block: 2rem 3.5rem; }
+  .split { grid-template-columns: 1fr; gap: 2rem; }
+  .row { grid-template-columns: 1fr; gap: .3rem; }
+  section { padding-block: 3.5rem; }
+}
+@media (max-width: 560px) {
+  .list li, .timeline li { grid-template-columns: 1fr; gap: .1rem; }
+  .course { box-shadow: 5px 5px 0 var(--ink); }
+  .stamp { font-size: 1.25rem; top: 6rem; }
+  .sticker { width: 2.7rem; height: 2.7rem; font-size: 1.4rem; }
+  .sticker.s1 { left: -.5rem; }
+  .sticker.s2 { right: -.4rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .bar span, .stamp.on { transition: none; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="#"><i aria-hidden="true">🎓</i>รู้จัก Moodle</a>
+    <nav aria-label="เมนูหลัก">
+      <a href="#anatomy">โครงสร้างรายวิชา</a>
+      <a href="#features">ความสามารถ</a>
+      <a href="#roles">บทบาท</a>
+      <a href="#history">ประวัติ</a>
+      <a href="#start">เริ่มใช้งาน</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="hero">
+      <div>
+        <h1>ห้องเรียนที่เปิดไว้บนเว็บ ให้เข้าได้ทุกเวลา</h1>
+        <p class="lede">Moodle เป็นระบบจัดการการเรียนรู้ (LMS) แบบโอเพนซอร์สที่ใช้ได้ฟรี โรงเรียน มหาวิทยาลัย และบริษัทนำไปติดตั้งเพื่อสอนออนไลน์ ครูแจกเอกสาร รับงาน ออกข้อสอบ ตั้งกระทู้ถกเถียง และดูคะแนนได้ในที่เดียว</p>
+        <p class="name-note">ชื่อ Moodle ย่อมาจาก Modular Object-Oriented Dynamic Learning Environment แปลตรงๆ ว่า สภาพแวดล้อมการเรียนรู้แบบไดนามิกที่แยกเป็นโมดูลและเน้นวัตถุ</p>
+      </div>
+
+      <div class="course-wrap">
+        <div class="tape" aria-hidden="true"></div>
+        <span class="sticker s1" aria-hidden="true">🌟</span><span class="sticker s2" aria-hidden="true">💖</span><span class="sticker s3" aria-hidden="true">📚</span><span class="sticker s4" aria-hidden="true">🚀</span>
+        <div class="course" aria-label="ตัวอย่างหน้ารายวิชาใน Moodle">
+          <div class="course-head">
+            <div class="crumbs">รายวิชาของฉัน › BIO101 › สัปดาห์ที่ 3</div>
+            <h3>BIO101 ชีววิทยาของเซลล์เบื้องต้น</h3>
+            <div class="progress"><div class="bar"><span id="bar"></span></div><span id="pct">เสร็จ 0 จาก 4</span></div>
+          </div>
+          <div class="week">สัปดาห์ที่ 3 เยื่อหุ้มเซลล์และการลำเลียงสาร</div>
+          <ul class="acts">
+            <li><span class="ico" aria-hidden="true">📄</span><span class="name">สไลด์: เยื่อหุ้มเซลล์<small>ไฟล์ · ทรัพยากร</small></span><button class="done" type="button" aria-pressed="false">เสร็จแล้ว</button></li>
+            <li><span class="ico" aria-hidden="true">💬</span><span class="name">ถกกัน: ทำไมเซลล์ต้องมีปั๊มไอออน<small>กระดานสนทนา · ตอบ 1 ครั้ง</small></span><button class="done" type="button" aria-pressed="false">เสร็จแล้ว</button></li>
+            <li><span class="ico" aria-hidden="true">🧠</span><span class="name">แบบทดสอบที่ 3: ออสโมซิสและการแพร่<small>10 ข้อ · ทำได้ 2 ครั้ง</small></span><button class="done" type="button" aria-pressed="false">เสร็จแล้ว</button></li>
+            <li><span class="ico" aria-hidden="true">✏️</span><span class="name">รายงานแลป: ทดลองออสโมซิสในมันฝรั่ง<small>งานที่มอบหมาย · ส่งภายในวันศุกร์ 23:59</small></span><button class="done" type="button" aria-pressed="false">เสร็จแล้ว</button></li>
+          </ul>
+          <div class="course-foot">ตัวอย่างเท่านั้น ลองกด “เสร็จแล้ว” ให้ครบทุกข้อ</div>
+          <div class="stamp" id="stamp" aria-hidden="true">ผ่านครบแล้ว</div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="band">
+  <div class="wrap">
+    <section id="what" style="padding-block:4rem">
+      <div class="split">
+        <div class="sec-head" style="margin:0; align-content:start">
+          <h2><span class="emo" aria-hidden="true">🧩</span>ซอฟต์แวร์ที่ติดตั้งเอง ไม่ใช่บริการที่ต้องเช่า</h2>
+        </div>
+        <div class="body-stack">
+          <p>Moodle เขียนด้วย <code>PHP</code> ทำงานบนเว็บเซิร์ฟเวอร์ทั่วไปร่วมกับฐานข้อมูล เช่น MySQL, MariaDB หรือ PostgreSQL ซอร์สโค้ดเผยแพร่ภายใต้ <span class="hl">GNU General Public License</span> ทุกคนจึงดาวน์โหลด ติดตั้ง แก้ไข และแจกจ่ายต่อได้โดยไม่เสียค่าใช้จ่าย</p>
+          <p>สถาบันเลือกติดตั้งบนเซิร์ฟเวอร์ของตัวเอง ใช้ผู้ให้บริการโฮสติ้งที่เป็นพันธมิตร หรือใช้ MoodleCloud ก็ได้ ผู้เรียนและครูเข้าผ่านเบราว์เซอร์ หรือผ่านแอป Moodle บน Android และ iOS ซึ่งดาวน์โหลดเนื้อหาไว้เรียนแบบออฟไลน์ได้</p>
+          <p>Moodle แยกเป็นโมดูล จึงต่อยอดด้วยปลั๊กอินได้เกือบทุกส่วน ทั้งกิจกรรมแบบใหม่ ธีม วิธีเข้าสู่ระบบ รายงาน และการเชื่อมกับระบบอื่น</p>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div class="wrap">
+  <section id="anatomy">
+    <div class="sec-head">
+      <h2><span class="emo" aria-hidden="true">🧱</span>ทุกรายวิชาประกอบด้วยหัวข้อ ทรัพยากร และกิจกรรม</h2>
+      <p class="muted">หน้ารายวิชาแบ่งเป็นหัวข้อ มักแบ่งตามสัปดาห์หรือตามเรื่อง ครูใส่ของสองประเภทลงในแต่ละหัวข้อ</p>
+    </div>
+    <div class="split">
+      <div>
+        <h3>ทรัพยากร: สิ่งที่ผู้เรียนอ่านหรือดู</h3>
+        <ul class="list">
+          <li><b>📁 ไฟล์</b><span>PDF สไลด์ เอกสาร หรือวิดีโอที่อัปโหลดไว้ในรายวิชา</span></li>
+          <li><b>📃 หน้า</b><span>หน้าเว็บที่เขียนในตัวแก้ไขข้อความของ Moodle โดยตรง</span></li>
+          <li><b>📖 หนังสือ</b><span>เนื้อหาหลายหน้าแบ่งเป็นบท เหมือนตำราออนไลน์เล่มสั้น</span></li>
+          <li><b>🔗 URL</b><span>ลิงก์ไปเว็บไซต์หรือวิดีโอภายนอก</span></li>
+          <li><b>🗂️ โฟลเดอร์</b><span>รวมไฟล์หลายไฟล์ไว้แสดงด้วยกัน</span></li>
+        </ul>
+      </div>
+      <div>
+        <h3>กิจกรรม: สิ่งที่ผู้เรียนลงมือทำ</h3>
+        <ul class="list">
+          <li><b>📝 งานที่มอบหมาย</b><span>ผู้เรียนอัปโหลดไฟล์หรือพิมพ์ตอบในหน้าเว็บ ครูตรวจและให้ข้อเสนอแนะ</span></li>
+          <li><b>🎯 แบบทดสอบ</b><span>ตรวจให้อัตโนมัติจากคลังข้อสอบ มีทั้งปรนัย จับคู่ เติมคำ และเรียงความ</span></li>
+          <li><b>💭 กระดานสนทนา</b><span>กระทู้สำหรับถามตอบ อภิปราย และประกาศ</span></li>
+          <li><b>🤝 เวิร์กช็อป</b><span>ผู้เรียนส่งงานแล้วประเมินงานของเพื่อนกันเอง</span></li>
+          <li><b>🎮 H5P</b><span>เนื้อหาโต้ตอบได้ เช่น วิดีโอแทรกคำถาม ลากวาง และแฟลชการ์ด</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="band">
+  <div class="wrap">
+    <section id="features">
+      <div class="sec-head" style="margin-bottom:2rem">
+        <h2><span class="emo" aria-hidden="true">🧰</span>เครื่องมือที่ครูและผู้ดูแลระบบใช้บ่อยที่สุด</h2>
+      </div>
+      <div class="rows">
+        <div class="row"><h3><span class="emo" aria-hidden="true">📊</span>สมุดคะแนน</h3><p>คะแนนจากทุกกิจกรรมไหลมารวมในที่เดียว จัดเป็นหมวด ถ่วงน้ำหนัก ตั้งสเกล และแปลงเป็นเกรดตัวอักษรได้</p></div>
+        <div class="row"><h3><span class="emo" aria-hidden="true">✅</span>ติดตามความคืบหน้า</h3><p>เครื่องหมายถูกบอกว่าผู้เรียนทำอะไรเสร็จแล้ว ครูกำหนดเงื่อนไขได้ เช่น “เปิดไฟล์นี้แล้ว” หรือ “ได้คะแนนอย่างน้อย 60%”</p></div>
+        <div class="row"><h3><span class="emo" aria-hidden="true">🔓</span>จำกัดการเข้าถึง</h3><p>เปิดเนื้อหาต่อเมื่อถึงวันที่กำหนด ได้คะแนนตามเกณฑ์ หรือทำกิจกรรมอื่นเสร็จแล้ว ผู้เรียนจึงเดินตามเส้นทางที่ครูวางไว้</p></div>
+        <div class="row"><h3><span class="emo" aria-hidden="true">🏅</span>เหรียญและเกียรติบัตร</h3><p>มอบเหรียญเมื่อผู้เรียนทำสำเร็จ เหรียญใช้มาตรฐาน Open Badges ผู้เรียนจึงนำไปแสดงบนเว็บอื่นได้</p></div>
+        <div class="row"><h3><span class="emo" aria-hidden="true">🌏</span>ภาษาของหน้าจอ</h3><p>ชุดภาษารองรับมากกว่า 100 ภาษา รวมถึงภาษาไทย และผู้ใช้แต่ละคนเลือกภาษาของตัวเองได้</p></div>
+        <div class="row"><h3><span class="emo" aria-hidden="true">🔌</span>เชื่อมต่อระบบอื่น</h3><p>LTI เชื่อมเครื่องมือภายนอก SCORM นำเข้าบทเรียนอีเลิร์นนิง และเว็บเซอร์วิสเชื่อมกับระบบอื่นของสถาบัน</p></div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div class="wrap">
+  <section id="roles">
+    <div class="sec-head">
+      <h2><span class="emo" aria-hidden="true">🔑</span>ใครทำอะไรได้บ้าง</h2>
+      <p class="muted">Moodle คุมสิทธิ์ด้วยบทบาท คนหนึ่งคนมีบทบาทต่างกันในแต่ละรายวิชาได้ เช่น เป็นครูในวิชาหนึ่งและเป็นผู้เรียนในอีกวิชา ตารางนี้คือบทบาทมาตรฐาน ผู้ดูแลระบบสร้างบทบาทเพิ่มได้</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th scope="col">บทบาท</th><th scope="col">ตัวอย่างผู้ใช้</th><th scope="col" class="c">แก้ไขรายวิชา</th><th scope="col" class="c">ตรวจงาน</th><th scope="col" class="c">ส่งงาน</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><b>🧑‍💼 ผู้จัดการ</b></td><td>เจ้าหน้าที่ที่ดูแลหลายรายวิชาทั้งระบบหรือทั้งคณะ</td><td class="c y">ได้</td><td class="c y">ได้</td><td class="c n">ไม่ได้</td></tr>
+          <tr><td><b>🛠️ ผู้สร้างรายวิชา</b></td><td>เจ้าหน้าที่ที่ได้รับอนุญาตให้สร้างรายวิชาใหม่</td><td class="c y">ได้</td><td class="c y">ได้</td><td class="c n">ไม่ได้</td></tr>
+          <tr><td><b>👩‍🏫 ครู</b></td><td>อาจารย์ผู้สอนและดูแลรายวิชา</td><td class="c y">ได้</td><td class="c y">ได้</td><td class="c n">ไม่ได้</td></tr>
+          <tr><td><b>🧑‍🏫 ครูผู้ช่วย (แก้ไขไม่ได้)</b></td><td>ผู้ช่วยสอนที่ตรวจงาน</td><td class="c n">ไม่ได้</td><td class="c y">ได้</td><td class="c n">ไม่ได้</td></tr>
+          <tr><td><b>🎒 นักเรียน</b></td><td>ผู้เรียนที่ลงทะเบียนแล้ว</td><td class="c n">ไม่ได้</td><td class="c n">ไม่ได้</td><td class="c y">ได้</td></tr>
+          <tr><td><b>👀 ผู้เยี่ยมชม</b></td><td>ผู้ที่เข้ามาดูได้แต่ร่วมกิจกรรมไม่ได้</td><td class="c n">ไม่ได้</td><td class="c n">ไม่ได้</td><td class="c n">ไม่ได้</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+<div class="band">
+  <div class="wrap">
+    <section id="history">
+      <div class="sec-head">
+        <h2><span class="emo" aria-hidden="true">🌱</span>จากโครงการวิจัยสู่แพลตฟอร์มทั่วโลก</h2>
+      </div>
+      <ol class="timeline">
+        <li><span class="yr">💡 1999</span><p><b>จุดเริ่มต้น</b> Martin Dougiamas ใช้ WebCT ที่มหาวิทยาลัย Curtin เมืองเพิร์ท ออสเตรเลีย แล้วเริ่มสร้างทางเลือกแบบเปิด บนแนวคิดว่าการเรียนรู้เกิดจากการสร้างความรู้ร่วมกัน</p></li>
+        <li><span class="yr">🎉 2002</span><p><b>Moodle 1.0 เปิดตัว</b> ในเดือนสิงหาคม เป็นซอฟต์แวร์โอเพนซอร์สที่ใช้ได้ฟรี</p></li>
+        <li><span class="yr">⚙️ 2010</span><p><b>Moodle 2.0</b> ปรับระบบไฟล์ใหม่ เพิ่ม Repository API และรองรับปลั๊กอินได้กว้างขึ้นมาก</p></li>
+        <li><span class="yr">📱 2013</span><p><b>แอป Moodle</b> เปิดตัว ทำให้เข้ารายวิชาจากโทรศัพท์และแท็บเล็ตได้</p></li>
+        <li><span class="yr">✨ 2022</span><p><b>Moodle 4.0</b> ออกแบบเมนูและหน้ารายวิชาใหม่โดยยึดผู้เรียนเป็นหลัก</p></li>
+        <li><span class="yr">🌟 2025</span><p><b>Moodle 5.0</b> สานต่อรอบการออกรุ่นปีละสองครั้ง และมีรุ่นสนับสนุนระยะยาวสำหรับสถาบันที่อัปเกรดไม่บ่อย</p></li>
+      </ol>
+    </section>
+  </div>
+</div>
+
+<div class="wrap">
+  <section id="start">
+    <div class="sec-head">
+      <h2><span class="emo" aria-hidden="true">🚀</span>เริ่มใช้งานได้สองทาง</h2>
+    </div>
+    <div class="tabs" role="tablist" aria-label="เลือกบทบาทของคุณ">
+      <button class="tab" role="tab" id="t1" aria-controls="p1" aria-selected="true" type="button">👩‍🏫 ฉันเป็นครู</button>
+      <button class="tab" role="tab" id="t2" aria-controls="p2" aria-selected="false" tabindex="-1" type="button">🛠️ ฉันดูแลระบบ</button>
+    </div>
+    <div class="panel" id="p1" role="tabpanel" aria-labelledby="t1">
+      <ol class="steps">
+        <li><div><b>เข้าสู่ระบบ</b> <span>Moodle ของสถาบัน แล้วเปิดรายวิชาของคุณ</span></div></li>
+        <li><div><b>เปิดโหมดแก้ไข</b> <span>ด้วยสวิตช์ด้านบนของหน้ารายวิชา</span></div></li>
+        <li><div><b>เพิ่มทรัพยากร</b> <span>เช่น ใส่แนวการสอนเป็นไฟล์ในหัวข้อแรก</span></div></li>
+        <li><div><b>เพิ่มกิจกรรม</b> <span>เช่น กระดานสนทนาให้แนะนำตัว หรืองานที่มอบหมาย</span></div></li>
+        <li><div><b>ดูสมุดคะแนน</b> <span>และรายงานความคืบหน้าระหว่างที่ผู้เรียนทำงาน</span></div></li>
+      </ol>
+    </div>
+    <div class="panel" id="p2" role="tabpanel" aria-labelledby="t2" hidden>
+      <ol class="steps">
+        <li><div><b>เลือกที่โฮสต์</b> <span>เซิร์ฟเวอร์ของตัวเอง พันธมิตร Moodle หรือ MoodleCloud</span></div></li>
+        <li><div><b>ติดตั้ง Moodle</b> <span>พร้อม PHP เว็บเซิร์ฟเวอร์ และฐานข้อมูล</span></div></li>
+        <li><div><b>ตั้งค่าการยืนยันตัวตน</b> <span>เช่น สร้างบัญชีเอง LDAP หรือ single sign-on</span></div></li>
+        <li><div><b>สร้างหมวดหมู่และรายวิชา</b> <span>แล้วลงทะเบียนผู้ใช้เข้ารายวิชา</span></div></li>
+        <li><div><b>วางแผนอัปเกรด</b> <span>ตามปฏิทินการออกรุ่น และสำรองข้อมูลเป็นประจำ</span></div></li>
+      </ol>
+    </div>
+
+    <div class="links">
+      <a href="https://moodle.org" target="_blank" rel="noopener">moodle.org ชุมชนและดาวน์โหลด</a>
+      <a href="https://docs.moodle.org" target="_blank" rel="noopener">docs.moodle.org คู่มือการใช้งาน</a>
+      <a href="https://moodle.org/plugins" target="_blank" rel="noopener">ไดเรกทอรีปลั๊กอิน</a>
+      <a href="https://moodle.academy" target="_blank" rel="noopener">Moodle Academy คอร์สเรียนฟรี</a>
+    </div>
+  </section>
+
+  <footer>
+    <span>เว็บแนะนำ Moodle ที่จัดทำอิสระสำหรับครูและนักเรียน ไม่ได้มีส่วนเกี่ยวข้องหรือได้รับการรับรองจาก Moodle Pty Ltd</span>
+    <span>Moodle™ เป็นเครื่องหมายการค้าของ Moodle Pty Ltd</span>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var buttons = document.querySelectorAll('.done');
+  var bar = document.getElementById('bar');
+  var pct = document.getElementById('pct');
+  var stamp = document.getElementById('stamp');
+  function update() {
+    var done = 0;
+    buttons.forEach(function (b) { if (b.getAttribute('aria-pressed') === 'true') done++; });
+    bar.style.width = (done / buttons.length * 100) + '%';
+    pct.textContent = 'เสร็จ ' + done + ' จาก ' + buttons.length;
+    stamp.classList.toggle('on', done === buttons.length);
+  }
+  buttons.forEach(function (b, i) {
+    if (i === 0) { b.setAttribute('aria-pressed', 'true'); b.textContent = 'เสร็จแล้ว ✓'; }
+    b.addEventListener('click', function () {
+      var on = b.getAttribute('aria-pressed') !== 'true';
+      b.setAttribute('aria-pressed', String(on));
+      b.textContent = on ? 'เสร็จแล้ว ✓' : 'เสร็จแล้ว';
+      update();
+    });
+  });
+  update();
+
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+  function select(t) {
+    tabs.forEach(function (x) {
+      var on = x === t;
+      x.setAttribute('aria-selected', String(on));
+      x.tabIndex = on ? 0 : -1;
+      document.getElementById(x.getAttribute('aria-controls')).hidden = !on;
+    });
+  }
+  tabs.forEach(function (t, i) {
+    t.addEventListener('click', function () { select(t); });
+    t.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        var n = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+        select(n); n.focus();
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>
